@@ -1,0 +1,25 @@
+{
+  "name": "imnotliieing-web",
+  "version": "1.0.0",
+  "description": "just website stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liiesl/imnotliieing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Liiesl/imnotliieing/issues"
+  },
+  "homepage": "https://github.com/Liiesl/imnotliieing#readme",
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "subtitle": "^4.2.1"
+  }
+}
