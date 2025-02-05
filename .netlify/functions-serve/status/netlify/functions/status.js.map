@@ -1,8 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../../Downloads/imnotliieing web/netlify/functions/status.js"],
-  "sourceRoot": "C:/Users/goblo/AppData/Local/Temp/tmp-13516-qFID5Ou3z1hM",
-  "sourcesContent": ["exports.handler = async (event, context) => {\r\n    return {\r\n      statusCode: 200,\r\n      body: JSON.stringify({ status: 'idle' }), // Replace with actual status logic\r\n    };\r\n  };"],
-  "mappings": ";AAAA,QAAQ,UAAU,OAAO,OAAO,YAAY;AACxC,SAAO;AAAA,IACL,YAAY;AAAA,IACZ,MAAM,KAAK,UAAU,EAAE,QAAQ,OAAO,CAAC;AAAA;AAAA,EACzC;AACF;",
-  "names": []
-}
