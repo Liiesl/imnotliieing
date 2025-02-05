@@ -1,5 +1,5 @@
 @echo off
-cd https://github.com/Liiesl/imnotliieing
+cd C:\Users\goblo\Downloads\imnotliieing web
 git pull origin main
 git add .
 git commit -m "Auto-sync: %date% %time%"

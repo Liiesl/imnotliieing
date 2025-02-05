@@ -80,6 +80,12 @@
         <div class="card-title">Feature Coming Soon</div>
         <div class="card-description">Stay tuned for exciting updates!</div>
       </div>
+
+      <!-- Longer Appearance Card -->
+      <div class="card" onclick="openLongerAppearance()">
+        <div class="card-title">Longer Appearance</div>
+        <div class="card-description">Modify SRT Subtitle Files.</div>
+      </div>
     </div>
   </div>
 
@@ -92,6 +98,11 @@
     // Function to show a coming soon message
     function showComingSoon() {
       alert("This feature is coming soon!");
+    }
+
+    // Function to open Longer Appearance tool in a new tab
+    function openLongerAppearance() {
+      window.location.href = 'tools/Longer-Appearance-Srt.html';
     }
   </script>
 </body>

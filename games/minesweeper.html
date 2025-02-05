@@ -5,78 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minesweeper</title>
   <style>
+    /* General Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
-      background-color: #222;
-      color: #fff;
+      overflow: hidden;
     }
-    .main-menu, .game-over {
+    .main-menu, .game-over, .confirm-popup {
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       background-color: rgba(0, 0, 0, 0.8);
-      border-radius: 10px;
+      border-radius: 15px;
       padding: 20px 40px;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
-    .main-menu.show, .game-over.show {
+    .main-menu.show, .game-over.show, .confirm-popup.show {
       display: flex;
     }
-    .main-menu h1, .game-over h1 {
-      font-size: 24px;
+    .main-menu h1, .game-over h1, .confirm-popup h1 {
+      font-size: 2rem;
       margin-bottom: 20px;
     }
-    .main-menu button, .game-over button {
-      background-color: #4CAF50;
-      color: white;
+    .main-menu button, .game-over button, .confirm-popup button {
+      background-color: #2b2b2b;
+      color: #ffffff;
       border: none;
       padding: 10px 20px;
       margin: 5px;
       cursor: pointer;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
+      border-radius: 15px;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
-    .main-menu button:hover, .game-over button:hover {
-      background-color: #45a049;
+    .main-menu button:hover, .game-over button:hover, .confirm-popup button:hover {
+      background-color: #444444;
+      transform: scale(1.05);
     }
     .board {
       display: grid;
       grid-template-columns: repeat(10, 40px);
       grid-template-rows: repeat(10, 40px);
       gap: 5px;
-      border-radius: 10px;
-      background-color: #333;
+      border-radius: 15px;
+      background-color: #2b2b2b;
       padding: 10px;
     }
     .cell {
       width: 40px;
       height: 40px;
-      background-color: #444;
+      background-color: #333333;
       display: flex;
       justify-content: center;
       align-items: center;
-      border: 2px solid #555;
+      border: 2px solid #444444;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 1rem;
       transition: all 0.1s ease;
     }
     .cell.revealed {
-      background-color: #555;
-      border-color: #777;
+      background-color: #444444;
+      border-color: #555555;
       cursor: default;
     }
     .cell.mine {
@@ -90,12 +97,38 @@
     .cell:hover:not(.revealed) {
       transform: scale(1.05);
     }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #2b2b2b;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 15px;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      display: none; /* Hide by default */
+    }
+    .back-button.show {
+      display: block; /* Show when the game is on */
+    }
+    .back-button:hover {
+      background-color: #444444;
+      transform: scale(1.05);
+    }
+    .confirm-popup {
+      width: 300px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <div id="mainMenu" class="main-menu show">
     <h1>Minesweeper</h1>
     <button id="startGame">Start Game</button>
+    <button id="backToHome">Back to Home</button> <!-- New button -->
   </div>
   <div id="gameOver" class="game-over">
     <h1>Game Over!</h1>
@@ -103,23 +136,37 @@
     <button id="menuButton">Main Menu</button>
   </div>
   <div id="board" class="board"></div>
-
+  <button id="backButton" class="back-button">Back to Menu</button> <!-- Back Button -->
+  <div id="confirmPopup" class="confirm-popup">
+    <h1>Are you sure?</h1>
+    <p>Returning to the menu will abort the current game.</p>
+    <button id="confirmYes">Yes</button>
+    <button id="confirmNo">No</button>
+  </div>
   <script>
     const boardSize = 10;
     const numMines = 20;
-
     let board = [];
     let mines = [];
-
     const mainMenu = document.getElementById('mainMenu');
     const gameOver = document.getElementById('gameOver');
     const startGameButton = document.getElementById('startGame');
+    const backToHomeButton = document.getElementById('backToHome'); // New button reference
     const retryButton = document.getElementById('retryButton');
     const menuButton = document.getElementById('menuButton');
+    const backButton = document.getElementById('backButton'); // Back Button
+    const confirmPopup = document.getElementById('confirmPopup'); // Confirmation Popup
+    const confirmYesButton = document.getElementById('confirmYes'); // Yes Button
+    const confirmNoButton = document.getElementById('confirmNo'); // No Button
 
     startGameButton.addEventListener('click', () => {
       mainMenu.classList.remove('show');
+      backButton.classList.add('show'); // Show the back button
       startGame();
+    });
+
+    backToHomeButton.addEventListener('click', () => {
+      window.location.href = '../index.html'; // Redirect to home page
     });
 
     retryButton.addEventListener('click', () => {
@@ -132,6 +179,22 @@
       resetGame();
       mainMenu.classList.add('show');
       gameOver.classList.remove('show');
+      backButton.classList.remove('show'); // Hide the back button
+    });
+
+    backButton.addEventListener('click', () => {
+      confirmPopup.classList.add('show'); // Show the confirmation popup
+    });
+
+    confirmYesButton.addEventListener('click', () => {
+      confirmPopup.classList.remove('show'); // Hide the popup
+      resetGame(); // Reset the game
+      mainMenu.classList.add('show'); // Show the main menu
+      backButton.classList.remove('show'); // Hide the back button
+    });
+
+    confirmNoButton.addEventListener('click', () => {
+      confirmPopup.classList.remove('show'); // Hide the popup
     });
 
     function createBoard() {
@@ -173,25 +236,21 @@
     function revealCell(r, c) {
       const cell = board[r][c];
       if (cell.revealed || cell.flagged) return;
-
       const cellElement = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
       cellElement.classList.add('revealed');
       cell.revealed = true;
-
       if (cell.mine) {
         cellElement.classList.add('mine');
         gameOver.classList.add('show');
         revealAllMines();
         return;
       }
-
       const adjacentMines = countAdjacentMines(r, c);
       if (adjacentMines > 0) {
         cellElement.textContent = adjacentMines;
       } else {
         revealAdjacentCells(r, c);
       }
-
       checkWin();
     }
 
@@ -199,7 +258,6 @@
       const cell = board[r][c];
       const cellElement = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
       if (cell.revealed) return;
-
       cell.flagged = !cell.flagged;
       if (cell.flagged) {
         cellElement.classList.add('flagged');

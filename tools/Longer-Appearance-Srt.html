@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify SRT Subtitle Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            background-color: #2b2b2b;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .upload-area {
+            border: 3px dashed #03346E;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            cursor: pointer;
+            color: #d3d3d3;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .upload-area.dragover {
+            background-color: #333333;
+        }
+        .upload-area:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+        .file-list li {
+            background-color: #1e1e1e;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-list li .remove-btn {
+            color: #f44336;
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        .controls select, .controls button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #03346E;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .controls select:hover, .controls button:hover {
+            background-color: #444444;
+            transform: scale(1.05);
+        }
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333333;
+            border-radius: 5px;
+        }
+        .progress-bar-inner {
+            height: 10px;
+            width: 0;
+            background-color: #03346E;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modify SRT Subtitle Files</h1>
+        <div class="upload-area" id="upload-area" role="button" aria-label="Upload Area">
+            <p>Drag & Drop your SRT files here or click to upload</p>
+            <input type="file" id="file-input" accept=".srt" multiple style="display: none;" aria-hidden="true">
+        </div>
+        <ul class="file-list" id="file-list"></ul>
+        <div class="controls">
+            <select id="seconds-select">
+                <option value="1">Add 1 second</option>
+                <option value="2">Add 2 seconds</option>
+                <option value="3">Add 3 seconds</option>
+                <option value="4">Add 4 seconds</option>
+                <option value="5">Add 5 seconds</option>
+            </select>
+            <button id="export-btn">Export</button>
+        </div>
+    </div>
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress-bar-inner" id="progress-bar-inner"></div>
+    </div>
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const progressBarInner = document.getElementById('progress-bar-inner');
+        let filesArray = [];
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(event.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (event) => {
+            handleFiles(event.target.files);
+        });
+
+        function handleFiles(files) {
+            for (const file of files) {
+                if (file.name.endsWith('.srt')) {
+                    filesArray.push(file);
+                    const li = document.createElement('li');
+                    li.textContent = file.name;
+                    const removeBtn = document.createElement('span');
+                    removeBtn.textContent = '✖';
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.addEventListener('click', () => {
+                        filesArray = filesArray.filter(f => f !== file);
+                        li.remove();
+                    });
+                    li.appendChild(removeBtn);
+                    fileList.appendChild(li);
+                } else {
+                    alert('Only .srt files are allowed!');
+                }
+            }
+        }
+
+        document.getElementById('export-btn').addEventListener('click', async () => {
+            await LAP();
+        });
+
+        async function LAP() {
+            const files = filesArray.map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        const base64String = reader.result.split(',')[1];
+                        resolve({ name: file.name, content: base64String });
+                    };
+                    reader.onerror = error => reject(error);
+                });
+            });
+
+            const filesData = await Promise.all(files);
+
+            const formData = {
+                files: filesData,
+                seconds: document.getElementById('seconds-select').value
+            };
+
+            await fetch('/.netlify/functions/LAP', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.blob())
+              .then(blob => {
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.style.display = 'none';
+                  a.href = url;
+                  a.download = 'modified_srt_files.zip';
+                  document.body.appendChild(a);
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+              }).catch(error => {
+                  console.error('Error:', error);
+              });
+        }
+    </script>
+</body>
+</html>
