@@ -63,6 +63,30 @@
       font-size: 0.9rem;
       color: #a0a0a0;
     }
+    .footer {
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.75rem; /* Slightly smaller font size */
+      color: #a0a0a0;
+      text-align: center; /* Ensures everything is centered */
+    }
+    .footer p {
+      margin: 2px 0; /* Minimal spacing between lines */
+    }
+    .footer a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer a:hover {
+      color: #a0a0a0;
+    }
   </style>
 </head>
 <body>
@@ -85,6 +109,15 @@
       <div class="card" onclick="showComingSoon()">
         <div class="card-title">Feature Coming Soon</div>
         <div class="card-description">Stay tuned for exciting updates!</div>
+      </div>
+      
+      <div class="footer">
+        <p>&copy; 2023 Imnotliieing. All rights reserved. | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
+        <p>Follow us: 
+          <a href="https://twitter.com/imnotliieing" target="_blank">Twitter</a> | 
+          <a href="https://facebook.com/imnotliieing" target="_blank">Facebook</a> | 
+          <a href="https://instagram.com/imnotliieing" target="_blank">Instagram</a>
+        </p>
       </div>
     </div>
   </div>
