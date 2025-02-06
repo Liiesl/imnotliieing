@@ -24,14 +24,16 @@ exports.handler = async (event, context) => {
             });
 
             // Correctly format the modified subtitles
-            const modifiedContent = modified.map(cue => {
+            let modifiedContent = '';
+            let cueNumber = 1;
+            for (const cue of modified) {
                 if (cue.type === 'cue') {
                     const start = formatTime(cue.data.start);
                     const end = formatTime(cue.data.end);
-                    return `${cue.data.text}\n${start} --> ${end}`;
+                    modifiedContent += `${cueNumber}\n${start} --> ${end}\n${cue.data.text}\n\n`;
+                    cueNumber++;
                 }
-                return '';
-            }).join('\n\n');
+            }
 
             console.log(`Modified content: ${modifiedContent.substring(0, 100)}...`); // Log first 100 chars
 
