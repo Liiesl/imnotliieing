@@ -109,8 +109,8 @@
         }
         .back-button {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 70px;
+            left: 15px;
             padding: 10px 20px;
             background-color: #03346E;
             color: #ffffff;
@@ -119,13 +119,20 @@
             cursor: pointer;
             text-decoration: none;
             font-size: 1rem;
+            background-color: #2b2b2b;
+            border-radius: 15px;
+            transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
         .back-button:hover {
-            background-color: #444444;
+            background-color: #121212; /* Slightly darker background on hover */
+            transform: scale(1.05);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
+    <div id="sidebar-container"></div>
     <a href="../index.html" class="back-button">Back to Home</a>
     <div class="container">
         <h1>Modify SRT Subtitle Files</h1>
@@ -243,6 +250,39 @@
                   console.error('Error:', error);
               });
         }
+    
+            window.addEventListener('DOMContentLoaded', function () {
+            fetch('/sidebar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('sidebar-container').innerHTML = data;
+
+                    // Reinitialize the sidebar functionality
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebarOverlay = document.getElementById('sidebarOverlay');
+                    const menuButton = document.getElementById('menuButton');
+
+                    if (!sidebar || !sidebarOverlay || !menuButton) {
+                        console.error('Sidebar elements not found. Ensure sidebar.html is properly loaded.');
+                        return;
+                    }
+
+                    // Toggle sidebar visibility with smooth animation
+                    menuButton.addEventListener('click', function () {
+                        sidebar.classList.toggle('open');
+                        sidebarOverlay.classList.toggle('open'); // Show/hide the overlay
+                    });
+
+                    // Close sidebar when clicking outside (on the overlay)
+                    sidebarOverlay.addEventListener('click', function () {
+                        sidebar.classList.remove('open');
+                        sidebarOverlay.classList.remove('open'); // Hide the overlay
+                    });
+                })
+                .catch(error => {
+                    console.error('Failed to load sidebar:', error);
+                });
+        });
     </script>
 </body>
 </html>
