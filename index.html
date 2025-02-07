@@ -182,11 +182,12 @@
       }
 
       .card-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: 1rem;
       }
 
       .card {
+        min-width: none;
         padding: 1.5rem;
       }
 
@@ -199,7 +200,14 @@
       }
 
       .footer {
-        padding: 0.8rem;
+        flex-direction: column; /* Keep vertical stacking for other elements */
+        align-items: center;
+        padding: 0.3rem;
+        font-size: 0.55rem;
+      }
+      .social-links {
+        gap: 0.2rem;
+        margin-top: 0;
       }
 
       .container {
@@ -242,8 +250,8 @@
 
   <div class="container">
     <section class="home-section">
-      <h1 class="home-title">Welcome to Imnotliieing</h1>
-      <p class="home-subtitle">Your one-stop destination for useful tools and entertaining games</p>
+      <h1 class="home-title">Imnotliieing i swear</h1>
+      <p class="home-subtitle">Take a look at my website. developped by me only.</p>
     </section>
 
     <section class="tools-section">
@@ -256,7 +264,7 @@
               <i class="fas fa-bomb"></i>
             </div>
             <div class="card-title">Minesweeper Game</div>
-            <div class="card-description">Challenge yourself with the classic Minesweeper game. Test your logic and strategic thinking skills.</div>
+            <div class="card-description">Play minesweeper with a more moredn look.</div>
           </div>
 
           <!-- Longer Appearance Card -->
@@ -265,7 +273,7 @@
               <i class="fas fa-clock"></i>
             </div>
             <div class="card-title">Longer Appearance</div>
-            <div class="card-description">Enhance your SRT timing with our advanced duration adjustment tool.</div>
+            <div class="card-description">When the subtitle are not long enough.</div>
           </div>
 
           <!-- Longer Appearance Card -->
@@ -283,7 +291,7 @@
               <i class="fas fa-rocket"></i>
             </div>
             <div class="card-title">Coming Soon</div>
-            <div class="card-description">Exciting new features are on the horizon. Stay tuned for our next update!</div>
+            <div class="card-description">Stay tuned for our next update!</div>
           </div>
         </div>
       </div>

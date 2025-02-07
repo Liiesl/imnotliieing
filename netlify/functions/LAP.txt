@@ -15,27 +15,10 @@ exports.handler = async (event, context) => {
             const parsed = await parseToArray(content);
             console.log(`Parsed content: ${JSON.stringify(parsed)}`); // Log entire parsed content
 
-            // Modify the subtitles to handle overlaps
-            let modified = parsed.map((cue, index, arr) => {
+            const modified = parsed.map(cue => {
                 if (cue.type === 'cue') {
-                    // Add seconds to the end time
-                    const originalEnd = cue.data.end;
-                    const newEnd = originalEnd + seconds * 1000;
-
-                    // Check for overlap with the next cue's start time
-                    if (index < arr.length - 1 && arr[index + 1].type === 'cue') {
-                        const nextCueStart = arr[index + 1].data.start;
-                        if (newEnd > nextCueStart) {
-                            // Adjust the end time to match the next cue's start time
-                            cue.data.end = nextCueStart;
-                        } else {
-                            // Otherwise, apply the added seconds
-                            cue.data.end = newEnd;
-                        }
-                    } else {
-                        // If no next cue or next cue is not of type 'cue', apply the added seconds
-                        cue.data.end = newEnd;
-                    }
+                    // Only add seconds to the end time
+                    cue.data.end += seconds * 1000;
                 }
                 return cue;
             });
@@ -53,10 +36,12 @@ exports.handler = async (event, context) => {
             }
 
             console.log(`Modified content: ${modifiedContent.substring(0, 100)}...`); // Log first 100 chars
+
             zip.file(file.name, modifiedContent);
         }
 
         const zipContent = await zip.generateAsync({ type: 'nodebuffer' });
+
         return {
             statusCode: 200,
             headers: {

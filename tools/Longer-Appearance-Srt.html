@@ -129,6 +129,18 @@
             transform: scale(1.05);
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
         }
+        @media (max-width: 7680x) {
+            .footer {
+                flex-direction: column; /* Keep vertical stacking for other elements */
+                align-items: center;
+                padding: 0.3rem;
+                font-size: 0.55rem;
+            }
+            .social-links {
+                gap: 0.2rem;
+                margin-top: 0;
+            }
+        }
     </style>
 </head>
 <body>
