@@ -1,0 +1,9 @@
+[build]
+  functions = "netlify/functions"
+  publish = "/"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Service-Worker-Allowed = "/"
+    Cache-Control = "public, max-age=0, must-revalidate"
