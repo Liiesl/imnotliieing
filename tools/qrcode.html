@@ -352,7 +352,7 @@
           <i class="fas fa-search"></i>
         </button>
       </div>
-    </div>
+    </form>
   </header>
   <div id="sidebar-container"></div>
 
@@ -361,8 +361,8 @@
       <p class="scanner-subtitle">Upload an image or use your camera to scan QR codes instantly</p>
 
       <div class="toggle-buttons">
-        <button id="fileToggle" class="active">Upload Image</button>
-        <button id="cameraToggle">Use Camera</button>
+        <button id="fileToggle" class="active" type="button">Upload Image</button>
+        <button id="cameraToggle" type="button">Use Camera</button>
       </div>
 
       <div id="fileInputSection" class="file-input">
@@ -596,58 +596,58 @@
           console.error('Failed to load sidebar:', error);
         });
     });
-        // Search handler for all pages
-        function handleSearch(event) {
-            event.preventDefault();
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            const baseUrl = '/index.html'; // Always points to root
+    // Search handler for all pages
+    function handleSearch(event) {
+        event.preventDefault();
+        const searchTerm = document.getElementById('searchInput').value.trim();
+        const baseUrl = '/index.html'; // Always points to root
 
-            if (searchTerm) {
-                window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
-            } else {
-                window.location.href = baseUrl;
-            }
-            }
-
-        // On home page load
-         window.addEventListener('DOMContentLoaded', function () {
-            // Parse URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchTerm = urlParams.get('search');
-
-            // Only run on home page (root index.html)
-            if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-                // Initialize search if parameter exists
-                if (searchTerm) {
-                    document.getElementById('searchInput').value = searchTerm;
-                    filterSections(searchTerm.toLowerCase());
-                }
-
-                // Initialize search functionality
-                document.getElementById('searchInput').addEventListener('input', function(e) {
-                    filterSections(e.target.value.toLowerCase());
-                });
-            }
-
-        function filterSections(term) {
-            const sections = document.querySelectorAll('section:not(.tools-section)');
-            const cards = document.querySelectorAll('.card');
-
-            sections.forEach(section => {
-            section.classList.toggle('hidden-section', term !== '');
-            });
-
-            cards.forEach(card => {
-            const title = card.querySelector('.card-title').textContent.toLowerCase();
-            const description = card.querySelector('.card-description').textContent.toLowerCase();
-            card.style.display = (title.includes(term) || description.includes(term)) 
-                ? 'flex' 
-                : 'none';
-            });
-
-            document.querySelector('.tools-section').style.display = 'block';
+        if (searchTerm) {
+            window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
+        } else {
+            window.location.href = baseUrl;
         }
+        }
+
+    // On home page load
+      window.addEventListener('DOMContentLoaded', function () {
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchTerm = urlParams.get('search');
+
+        // Only run on home page (root index.html)
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+            // Initialize search if parameter exists
+            if (searchTerm) {
+                document.getElementById('searchInput').value = searchTerm;
+                filterSections(searchTerm.toLowerCase());
+            }
+
+            // Initialize search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                filterSections(e.target.value.toLowerCase());
+            });
+        }
+
+    function filterSections(term) {
+        const sections = document.querySelectorAll('section:not(.tools-section)');
+        const cards = document.querySelectorAll('.card');
+
+        sections.forEach(section => {
+        section.classList.toggle('hidden-section', term !== '');
         });
+
+        cards.forEach(card => {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        const description = card.querySelector('.card-description').textContent.toLowerCase();
+        card.style.display = (title.includes(term) || description.includes(term)) 
+            ? 'flex' 
+            : 'none';
+        });
+
+        document.querySelector('.tools-section').style.display = 'block';
+    }
+    });
   </script>
 </body>
 </html>

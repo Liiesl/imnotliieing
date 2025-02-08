@@ -301,12 +301,6 @@
       color: #4a9eff;
     }
 
-    .search-form {
-      margin: 0;
-      padding: 0;
-      margin-left: auto;
-    }
-
     @media (max-width: 480px) {
       .home-title {
         font-size: 2rem;
@@ -380,6 +374,7 @@
           <i class="fas fa-search"></i>
         </button>
       </div>
+    </form>
   </header>
   <div class="container">
     <section class="home-section">
@@ -509,14 +504,12 @@
     function handleSearch(event) {
       event.preventDefault();
       const searchTerm = document.getElementById('searchInput').value.trim();
-      const baseUrl = window.location.pathname.includes('index.html') 
-        ? window.location.href.split('?')[0]
-        : 'index.html';
+      const baseUrl = '/index.html'; // Always points to root
 
       if (searchTerm) {
-        window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
+          window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
       } else {
-        window.location.href = baseUrl;
+          window.location.href = baseUrl;
       }
     }
 
@@ -526,18 +519,18 @@
       const urlParams = new URLSearchParams(window.location.search);
       const searchTerm = urlParams.get('search');
 
-      // Only run on home page
-      if (window.location.pathname.includes('index.html')) {
-        // Initialize search if parameter exists
-        if (searchTerm) {
-          document.getElementById('searchInput').value = searchTerm;
-          filterSections(searchTerm.toLowerCase());
-        }
+      // Only run on home page (root index.html)
+      if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+          // Initialize search if parameter exists
+          if (searchTerm) {
+              document.getElementById('searchInput').value = searchTerm;
+              filterSections(searchTerm.toLowerCase());
+          }
 
-        // Initialize search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-          filterSections(e.target.value.toLowerCase());
-        });
+          // Initialize search functionality
+          document.getElementById('searchInput').addEventListener('input', function(e) {
+              filterSections(e.target.value.toLowerCase());
+          });
       }
 
       function filterSections(term) {
