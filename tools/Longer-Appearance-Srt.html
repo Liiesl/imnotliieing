@@ -4,169 +4,409 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modify SRT Subtitle Files</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #121212;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            padding-top: 6rem;
         }
+
         .container {
-            width: 90%;
             max-width: 600px;
-            text-align: center;
-            background-color: #2b2b2b;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            background: rgba(43, 43, 43, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 80px;
+            animation: fadeIn 0.8s ease-out;
         }
-        h1 {
+
+        .subtitle-section {
+            text-align: center;
+        }
+
+        .subtitle-title {
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #b0b0b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
+
+        .subtitle-description {
+            font-size: 1rem;
+            color: #b0b0b0;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
         .upload-area {
-            border: 3px dashed #03346E;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            width: 100%;
-            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
             cursor: pointer;
-            color: #d3d3d3;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-align: center;
         }
-        .upload-area.dragover {
-            background-color: #333333;
+
+        .upload-area:hover, .upload-area.dragover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
-        .upload-area:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+
+        .upload-area i {
+            font-size: 2.5rem;
+            color: #4a9eff;
+            margin-bottom: 1rem;
+            display: block;
         }
+
         .file-list {
             list-style: none;
-            padding: 0;
-            width: 100%;
+            margin-bottom: 1.5rem;
         }
+
         .file-list li {
-            background-color: #1e1e1e;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            animation: slideIn 0.3s ease-out;
         }
+
         .file-list li .remove-btn {
-            color: #f44336;
+            color: #ff5c5c;
             cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
         }
+
+        .file-list li .remove-btn:hover {
+            background: rgba(255, 92, 92, 0.1);
+            transform: scale(1.1);
+        }
+
         .controls {
             display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 10px;
-            gap: 10px;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
+
         .controls select, .controls button {
-            padding: 10px;
-            border-radius: 5px;
+            flex: 1;
+            padding: 1rem;
+            border-radius: 12px;
             border: none;
-            background-color: #03346E;
-            color: #ffffff;
+            background: rgba(74, 158, 255, 0.2);
+            color: white;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            outline: none;
         }
+
+        .controls select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .controls select option {
+            background: #2b2b2b;
+            color: white;
+        }
+
+        .controls button {
+            background: #4a9eff;
+        }
+
         .controls select:hover, .controls button:hover {
-            background-color: #444444;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
+
+        .controls button:hover {
+            background: #3a8eff;
+        }
+
         .progress-bar {
-            position: fixed;
-            bottom: 0;
             width: 100%;
-            background-color: #333333;
-            border-radius: 5px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 1.5rem;
+            overflow: hidden;
         }
+
         .progress-bar-inner {
-            height: 10px;
+            height: 100%;
             width: 0;
-            background-color: #03346E;
-            border-radius: 5px;
+            background: #4a9eff;
+            border-radius: 3px;
+            transition: width 0.3s ease;
         }
+
         .back-button {
             position: absolute;
             top: 70px;
             left: 15px;
             padding: 10px 20px;
-            background-color: #03346E;
+            background: rgba(43, 43, 43, 0.95);
             color: #ffffff;
             border: none;
-            border-radius: 5px;
+            border-radius: 15px;
             cursor: pointer;
             text-decoration: none;
             font-size: 1rem;
-            background-color: #2b2b2b;
-            border-radius: 15px;
-            transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
+
         .back-button:hover {
-            background-color: #121212; /* Slightly darker background on hover */
-            transform: scale(1.05);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+            background: rgba(74, 158, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
-        @media (max-width: 7680x) {
-            .footer {
-                flex-direction: column; /* Keep vertical stacking for other elements */
-                align-items: center;
-                padding: 0.3rem;
-                font-size: 0.55rem;
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer p {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #4a9eff;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-2px);
+        }
+
+        .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 10, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-bar {
+        display: flex;
+        align-items: right;
+        margin-left: auto;
+        gap: 0.5rem;
+        }
+
+        #searchInput {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        color: #fff;
+        outline: none;
+        width: 200px;
+        }
+
+        #searchInput::placeholder {
+        color: #b0b0b0;
+        }
+
+        .search-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        color: #fff;
+        cursor: pointer;
+        }
+
+        .search-button:hover {
+        background: rgba(74, 158, 255, 0.1);
+        color: #4a9eff;
+        }
+
+        .search-form {
+        margin: 0;
+        padding: 0;
+        margin-left: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin-bottom: 100px;
             }
+
+            .subtitle-title {
+                font-size: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                text-align: center;
+            }
+
             .social-links {
-                gap: 0.2rem;
-                margin-top: 0;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .subtitle-title {
+                font-size: 1.75rem;
+            }
+
+            .upload-area {
+                padding: 1.5rem 1rem;
+            }
+
+            .controls button, .controls select {
+                padding: 0.8rem;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="sidebar-container"></div>
-    <a href="../index.html" class="back-button">Back to Home</a>
+    <header class="header">
+        <form class="search-form" onsubmit="handleSearch(event)">
+            <div class="search-bar">
+              <input type="text" placeholder="Search tools..." id="searchInput" name="q">
+              <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+    </header>
+
     <div class="container">
-        <h1>Modify SRT Subtitle Files</h1>
-        <div class="upload-area" id="upload-area" role="button" aria-label="Upload Area">
-            <p>Drag & Drop your SRT files here or click to upload</p>
-            <input type="file" id="file-input" accept=".srt" multiple style="display: none;" aria-hidden="true">
-        </div>
-        <ul class="file-list" id="file-list"></ul>
-        <div class="controls">
-            <select id="seconds-select">
-                <option value="1">Add 1 second</option>
-                <option value="2">Add 2 seconds</option>
-                <option value="3">Add 3 seconds</option>
-                <option value="4">Add 4 seconds</option>
-                <option value="5">Add 5 seconds</option>
-            </select>
-            <button id="export-btn">Export</button>
-        </div>
+        <section class="subtitle-section">
+            <h1 class="subtitle-title">Subtitle Duration Modifier</h1>
+            <p class="subtitle-description">Easily adjust the duration of your subtitle files. Perfect for when subtitles disappear too quickly.</p>
+
+            <div class="upload-area" id="upload-area" role="button" aria-label="Upload Area">
+                <i class="fas fa-file-alt"></i>
+                <p>Drag & Drop your SRT files here or click to upload</p>
+                <input type="file" id="file-input" accept=".srt" multiple style="display: none;" aria-hidden="true">
+            </div>
+
+            <ul class="file-list" id="file-list"></ul>
+
+            <div class="controls">
+                <select id="seconds-select" aria-label="Select duration increase">
+                    <option value="1">Add 1 second</option>
+                    <option value="2">Add 2 seconds</option>
+                    <option value="3">Add 3 seconds</option>
+                    <option value="4">Add 4 seconds</option>
+                    <option value="5">Add 5 seconds</option>
+                </select>
+                <button id="export-btn">Process Files</button>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-bar-inner" id="progress-bar-inner"></div>
+            </div>
+        </section>
     </div>
-    <div class="progress-bar" id="progress-bar">
-        <div class="progress-bar-inner" id="progress-bar-inner"></div>
-    </div>
+
+    <footer class="footer">
+        <p>&copy; 2023 Imnotliieing. All rights reserved. | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
+        <div class="social-links">
+            <a href="https://youtube.com/@Vfrix" target="_blank">
+                <i class="fab fa-youtube"></i>
+                <span>Youtube</span>
+            </a>
+            <a href="https://github.com/Liiesl" target="_blank">
+                <i class="fab fa-github"></i>
+                <span>Github</span>
+            </a>
+            <a href="https://instagram.com/suryaalingga" target="_blank">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+        </div>
+    </footer>
+
     <script>
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('file-input');
@@ -204,7 +444,7 @@
                     const li = document.createElement('li');
                     li.textContent = file.name;
                     const removeBtn = document.createElement('span');
-                    removeBtn.textContent = '✖';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
                     removeBtn.className = 'remove-btn';
                     removeBtn.addEventListener('click', () => {
                         filesArray = filesArray.filter(f => f !== file);
@@ -236,64 +476,125 @@
             });
 
             const filesData = await Promise.all(files);
+            progressBarInner.style.width = '50%';
 
             const formData = {
                 files: filesData,
                 seconds: document.getElementById('seconds-select').value
             };
 
-            await fetch('/.netlify/functions/LAP', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.blob())
-              .then(blob => {
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.style.display = 'none';
-                  a.href = url;
-                  a.download = 'modified_srt_files.zip';
-                  document.body.appendChild(a);
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-              }).catch(error => {
-                  console.error('Error:', error);
-              });
+            try {
+                const response = await fetch('/.netlify/functions/LAP', {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const blob = await response.blob();
+                progressBarInner.style.width = '100%';
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'modified_srt_files.zip';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                setTimeout(() => {
+                    progressBarInner.style.width = '0';
+                }, 1000);
+            } catch (error) {
+                console.error('Error:', error);
+                progressBarInner.style.width = '0';
+                alert('An error occurred while processing the files. Please try again.');
+            }
         }
-    
-            window.addEventListener('DOMContentLoaded', function () {
+
+        window.addEventListener('DOMContentLoaded', function () {
             fetch('/sidebar.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('sidebar-container').innerHTML = data;
-
-                    // Reinitialize the sidebar functionality
                     const sidebar = document.getElementById('sidebar');
                     const sidebarOverlay = document.getElementById('sidebarOverlay');
                     const menuButton = document.getElementById('menuButton');
 
                     if (!sidebar || !sidebarOverlay || !menuButton) {
-                        console.error('Sidebar elements not found. Ensure sidebar.html is properly loaded.');
+                        console.error('Sidebar elements not found.');
                         return;
                     }
 
-                    // Toggle sidebar visibility with smooth animation
                     menuButton.addEventListener('click', function () {
                         sidebar.classList.toggle('open');
-                        sidebarOverlay.classList.toggle('open'); // Show/hide the overlay
+                        sidebarOverlay.classList.toggle('open');
                     });
 
-                    // Close sidebar when clicking outside (on the overlay)
                     sidebarOverlay.addEventListener('click', function () {
                         sidebar.classList.remove('open');
-                        sidebarOverlay.classList.remove('open'); // Hide the overlay
+                        sidebarOverlay.classList.remove('open');
                     });
                 })
                 .catch(error => {
                     console.error('Failed to load sidebar:', error);
                 });
+        });
+        // Search handler for all pages
+        function handleSearch(event) {
+            event.preventDefault();
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const baseUrl = '/index.html'; // Always points to root
+
+            if (searchTerm) {
+                window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
+            } else {
+                window.location.href = baseUrl;
+            }
+            }
+
+        // On home page load
+         window.addEventListener('DOMContentLoaded', function () {
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+
+            // Only run on home page (root index.html)
+            if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+                // Initialize search if parameter exists
+                if (searchTerm) {
+                    document.getElementById('searchInput').value = searchTerm;
+                    filterSections(searchTerm.toLowerCase());
+                }
+
+                // Initialize search functionality
+                document.getElementById('searchInput').addEventListener('input', function(e) {
+                    filterSections(e.target.value.toLowerCase());
+                });
+            }
+
+        function filterSections(term) {
+            const sections = document.querySelectorAll('section:not(.tools-section)');
+            const cards = document.querySelectorAll('.card');
+
+            sections.forEach(section => {
+            section.classList.toggle('hidden-section', term !== '');
+            });
+
+            cards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const description = card.querySelector('.card-description').textContent.toLowerCase();
+            card.style.display = (title.includes(term) || description.includes(term)) 
+                ? 'flex' 
+                : 'none';
+            });
+
+            document.querySelector('.tools-section').style.display = 'block';
+        }
         });
     </script>
 </body>
