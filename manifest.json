@@ -1,6 +1,6 @@
 {
-    "name": "Imnotliieing Tools",
-    "short_name": "Tools",
+    "name": "Imnotliieing a QRcode, SRT, Games",
+    "short_name": "QrScan",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0a0a0a",

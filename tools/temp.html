@@ -1,9 +1,107 @@
-[build]
-  functions = "netlify/functions"
-  publish = "/"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manhwa Tracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+  <div id="sidebar-container"></div>
+  <header class="header">
+    <h1>Manhwa Tracker</h1>
+  </header>
+  
+  <div class="container">
+    <div class="tracker-container">
+      <form id="manhwaForm">
+        <input type="url" id="manhwaUrl" placeholder="Enter manhwa URL" required>
+        <input type="number" id="lastChapter" placeholder="Last chapter read" step="0.1" required>
+        <button type="submit">Add Manhwa</button>
+      </form>
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Service-Worker-Allowed = "/"
-    Cache-Control = "public, max-age=0, must-revalidate"
+      <div id="manhwaList" class="manhwa-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // Fetch Firebase configuration from Netlify Function
+    fetch('/.netlify/functions/getFirebaseConfig')
+      .then(response => response.json())
+      .then(firebaseConfig => {
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM elements
+        const manhwaForm = document.getElementById('manhwaForm');
+        const manhwaList = document.getElementById('manhwaList');
+
+        // Form submit handler
+        manhwaForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const url = document.getElementById('manhwaUrl').value;
+          const chapter = parseFloat(document.getElementById('lastChapter').value);
+          
+          // Generate unique ID
+          const manhwaId = Date.now().toString();
+          
+          // Save to Firebase
+          database.ref('manhwas/' + manhwaId).set({
+            url: url,
+            lastChapter: chapter,
+            lastRead: new Date().toISOString()
+          });
+          
+          manhwaForm.reset();
+        });
+
+        // Load data from Firebase
+        database.ref('manhwas').on('value', (snapshot) => {
+          manhwaList.innerHTML = '';
+          const data = snapshot.val();
+          
+          for (const manhwaId in data) {
+            const manhwa = data[manhwaId];
+            const manhwaElement = document.createElement('div');
+            manhwaElement.className = 'manhwa-item';
+            manhwaElement.innerHTML = `
+              <div class="manhwa-info">
+                <a href="${manhwa.url}" target="_blank">${manhwa.url}</a>
+                <div>Last Chapter: ${manhwa.lastChapter}</div>
+                <div>Last Read: ${new Date(manhwa.lastRead).toLocaleDateString()}</div>
+              </div>
+              <div class="manhwa-actions">
+                <input type="number" class="update-chapter" placeholder="New chapter" step="0.1">
+                <button onclick="updateChapter('${manhwaId}')">Update</button>
+                <button onclick="deleteManhwa('${manhwaId}')">Delete</button>
+              </div>
+            `;
+            manhwaList.appendChild(manhwaElement);
+          }
+        });
+
+        // Update chapter function
+        window.updateChapter = (manhwaId) => {
+          const newChapter = parseFloat(document.querySelector(`#manhwaList [onclick="updateChapter('${manhwaId}')"]`).previousElementSibling.value);
+          if (!isNaN(newChapter)) {
+            database.ref('manhwas/' + manhwaId).update({
+              lastChapter: newChapter,
+              lastRead: new Date().toISOString()
+            });
+          }
+        };
+
+        // Delete function
+        window.deleteManhwa = (manhwaId) => {
+          database.ref('manhwas/' + manhwaId).remove();
+        };
+      })
+      .catch(error => console.error('Error fetching Firebase config:', error));
+  </script>
+</body>
+</html>
