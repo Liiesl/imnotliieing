@@ -29,7 +29,7 @@
   </div>
 
   <script>
-    // Fetch Firebase configuration from Netlify Function
+    // Fetch Firebase configuration from Netlify Functions
     fetch('/.netlify/functions/getFirebaseConfig')
       .then(response => response.json())
       .then(firebaseConfig => {
