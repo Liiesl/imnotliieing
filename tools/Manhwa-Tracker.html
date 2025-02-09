@@ -834,14 +834,9 @@
     const manhwaForm = document.getElementById('manhwaForm');
     const manhwaList = document.getElementById('manhwaList');
 
-    // Display results
-    manhwaList.innerHTML = '';
-    filtered.forEach(manhwa => {
-      const manhwaElement = document.createElement('div');
-      manhwaElement.className = 'manhwa-item';
-      // ... rest of your existing item creation code ...
-      manhwaList.appendChild(manhwaElement);
-    });
+}) // <-- This closes the firebaseConfig => {} block
+  .catch(error => {
+    console.error('Failed to load firebase config:', error);
   });
 
     // Modify existing form submit handler
@@ -935,6 +930,7 @@
               processed.sort((a, b) => new Date(a.lastRead) - new Date(b.lastRead));
               break;
       }
+    }
 
       // Clear current list
       manhwaList.innerHTML = '';
@@ -982,7 +978,6 @@
 
           manhwaList.appendChild(manhwaElement);
       });
-    }
 
     // Handle edit form submission
     document.getElementById('editForm').addEventListener('submit', (e) => {
@@ -1247,31 +1242,6 @@
         return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
       }
     }
-    function processAndDisplayManhwas() {
-        // Get filter and sort values
-        const domainFilter = document.getElementById('domainFilter').value;
-        const titleFilter = document.getElementById('titleFilter').value.toLowerCase();
-        const sortBy = document.getElementById('sortBy').value;
-
-        // Filter manhwas
-        let filtered = allManhwas.filter(manhwa => {
-        const matchesDomain = !domainFilter || manhwa.domains.includes(domainFilter);
-        const matchesTitle = manhwa.title.toLowerCase().includes(titleFilter);
-        return matchesDomain && matchesTitle;
-        });
-
-        // Sort manhwas
-        switch(sortBy) {
-        case 'a-z':
-            filtered.sort((a, b) => a.title.localeCompare(b.title));
-            break;
-        case 'latest':
-            filtered.sort((a, b) => new Date(b.lastRead) - new Date(a.lastRead));
-            break;
-        case 'oldest':
-            filtered.sort((a, b) => new Date(a.lastRead) - new Date(b.lastRead));
-            break;
-    }}
   </script>
 </body>
 </html>
