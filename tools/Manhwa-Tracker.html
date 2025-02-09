@@ -1054,26 +1054,6 @@
       }
     };
 
-    // Add to existing script
-    function openEditModal(manhwaId) {
-    editingManhwaId = manhwaId;
-    const ref = database.ref('manhwas/' + manhwaId);
-    ref.once('value', (snapshot) => {
-        const manhwa = snapshot.val();
-        const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
-        
-        document.getElementById('editTitle').value = manhwa.title;
-        const container = document.getElementById('urlsContainer');
-        container.innerHTML = '';
-        
-        urls.forEach((url, index) => {
-        addUrlInput(url, index === 0);
-        });
-        
-        document.getElementById('editModal').style.display = 'block';
-    });
-    }
-
     function addUrlInput(value = '', isRequired = false) {
     const container = document.getElementById('urlsContainer');
     const group = document.createElement('div');
@@ -1224,8 +1204,28 @@
           console.error('Failed to load sidebar:', error);
         });
     });
+    
+    // Add to existing script
+    function openEditModal(manhwaId) {
+    editingManhwaId = manhwaId;
+    const ref = database.ref('manhwas/' + manhwaId);
+    ref.once('value', (snapshot) => {
+        const manhwa = snapshot.val();
+        const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
+        
+        document.getElementById('editTitle').value = manhwa.title;
+        const container = document.getElementById('urlsContainer');
+        container.innerHTML = '';
+        
+        urls.forEach((url, index) => {
+        addUrlInput(url, index === 0);
+        });
+        
+        document.getElementById('editModal').style.display = 'block';
+    });
+    }    
             // Search handler for all pages
-            function handleSearch(event) {
+        function handleSearch(event) {
             event.preventDefault();
             const searchTerm = document.getElementById('searchInput').value.trim();
             const baseUrl = '/index.html'; // Always points to root
