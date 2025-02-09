@@ -6,735 +6,8 @@
   <title>Manhwa Tracker</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+  <link rel="stylesheet" href="manhwa.css">
 
-    body {
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-        color: #ffffff;
-        min-height: 100vh;
-        padding: 2rem 1rem;
-        padding-top: 6rem;
-    }
-
-    .tools-title {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(45deg, #ffffff, #b0b0b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        background: linear-gradient(45deg, #ffffff, #b0b0b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .tracker-container {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background: rgba(43, 43, 43, 0.95);
-        border-radius: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        animation: fadeIn 0.8s ease-out;
-    }
-
-    #manhwaForm {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    #manhwaForm input {
-        padding: 12px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: #ffffff;
-        outline: none;
-        transition: all 0.3s ease;
-    }
-
-    #manhwaForm input:focus {
-        border-color: #4a9eff;
-        box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
-    }
-
-    #manhwaForm input::placeholder {
-        color: #b0b0b0;
-    }
-
-    #manhwaForm button {
-        padding: 12px 20px;
-        background: #4a9eff;
-        border: none;
-        border-radius: 12px;
-        color: white;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    #manhwaForm button:hover {
-        background: #3a8eff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .manhwa-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .manhwa-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        transition: all 0.3s ease;
-        animation: slideIn 0.3s ease-out;
-    }
-
-    .manhwa-item:hover {
-        background: rgba(255, 255, 255, 0.08);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .manhwa-info {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .manhwa-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #ffffff;
-    }
-
-    .manhwa-info a {
-        color: #4a9eff;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-        word-break: break-all;
-    }
-
-    .manhwa-info a:hover {
-        color: #3a8eff;
-    }
-
-    .manhwa-meta {
-        display: flex;
-        gap: 1rem;
-        font-size: 0.9rem;
-        color: #b0b0b0;
-    }
-
-    .manhwa-actions {
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-    }
-
-    .update-chapter {
-        width: 100px;
-        padding: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: #ffffff;
-        outline: none;
-        text-align: center;
-    }
-
-    .manhwa-actions button {
-        padding: 8px 12px;
-        background: rgba(74, 158, 255, 0.2);
-        border: none;
-        border-radius: 12px;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .manhwa-actions button:hover {
-        background: #4a9eff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .delete-btn {
-        background: rgba(255, 87, 87, 0.2) !important;
-    }
-
-    .delete-btn:hover {
-        background: #ff5757 !important;
-    }
-
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(8px);
-  padding: 1rem;
-}
-
-.modal-content {
-  background: rgba(43, 43, 43, 0.98);
-  margin: 2rem auto;
-  padding: 2.5rem;
-  width: 90%;
-  max-width: 500px;
-  border-radius: 20px;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-.modal-header {
-  margin-bottom: 2rem;
-}
-
-.modal-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(45deg, #ffffff, #b0b0b0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.modal-subtitle {
-  color: #b0b0b0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.close {
-  position: absolute;
-  right: 1.5rem;
-  top: 1.5rem;
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #b0b0b0;
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  transform: rotate(90deg);
-}
-
-#editForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-#editForm input {
-  width: 100%;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  color: #ffffff;
-  font-size: 1rem;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-#editForm input:focus {
-  border-color: #4a9eff;
-  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
-}
-
-#editForm input::placeholder {
-  color: #b0b0b0;
-}
-
-#urlsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.url-input-group {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.url-input-group input {
-  flex: 1;
-}
-
-.url-input-group .delete-btn {
-  padding: 0.75rem;
-  background: rgba(255, 87, 87, 0.2);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 42px;
-}
-
-.url-input-group .delete-btn:hover {
-  background: #ff5757;
-  transform: translateY(-2px);
-}
-
-.modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.add-url-btn,
-.save-changes-btn {
-  width: 100%;
-  padding: 1rem;
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.add-url-btn {
-  background: rgba(74, 158, 255, 0.2);
-}
-
-.add-url-btn:hover {
-  background: rgba(74, 158, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-.save-changes-btn {
-  background: #4a9eff;
-}
-
-.save-changes-btn:hover {
-  background: #3a8eff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
-}
-
-/* URL Selection Modal */
-.url-selection-modal .modal-content {
-  max-width: 400px;
-}
-
-.url-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-.url-button {
-  width: 100%;
-  padding: 1rem;
-  background: rgba(74, 158, 255, 0.2);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: left;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.url-button i {
-  font-size: 1.25rem;
-  color: #4a9eff;
-}
-
-.url-button:hover {
-  background: #4a9eff;
-  transform: translateY(-2px);
-}
-
-.url-button:hover i {
-  color: white;
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-    .edit-btn {
-    background: rgba(255, 193, 7, 0.2) !important;
-    }
-
-    .edit-btn:hover {
-    background: #ffc107 !important;
-    }
-
-  /* Add these styles to the existing CSS */
-  .controls {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .filters {
-    display: flex;
-    gap: 1rem;
-    flex-grow: 1;
-  }
-
-  .filter-control, .sort-control {
-    padding: 0.75rem;
-    background: rgba(43, 43, 43, 0.95); /* Changed to match container background */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    color: white;
-    outline: none;
-    transition: all 0.3s ease;
-  }
-
-  .filter-control:focus, .sort-control:focus {
-    border-color: #4a9eff;
-    box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
-  }
-
-  .filter-control option, .sort-control option {
-    background: #2b2b2b; /* Solid dark background */
-    color: white;
-    padding: 8px;
-  }
-
-  #titleFilter {
-    flex: 1;
-    width: auto;
-    min-width: 50px;
-  }
-
-  #domainFilter {
-    min-width: 150px;
-  }
-
-  .sort-control {
-    min-width: 150px;
-  }
-
-  .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(10, 10, 10, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 1rem;
-        text-align: center;
-        font-size: 0.85rem;
-        color: #888;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-  
-      .footer p {
-        margin: 0.5rem 0;
-      }
-  
-      .footer a {
-        color: #fff;
-        text-decoration: none;
-        transition: color 0.3s ease;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-      }
-  
-      .footer a:hover {
-        color: #4a9eff;
-        background: rgba(74, 158, 255, 0.1);
-      }
-  
-      .social-links {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        margin-top: 0.5rem;
-      }
-  
-      .social-links a {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-  
-      .social-links a:hover {
-        transform: translateY(-2px);
-      }
-
-    .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10, 10, 10, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .search-bar {
-    display: flex;
-    align-items: right;
-    margin-left: auto;
-    gap: 0.5rem;
-    }
-
-    #searchInput {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    color: #fff;
-    outline: none;
-    width: 200px;
-    }
-
-    #searchInput::placeholder {
-    color: #b0b0b0;
-    }
-
-    .search-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    color: #fff;
-    cursor: pointer;
-    }
-
-    .search-button:hover {
-    background: rgba(74, 158, 255, 0.1);
-    color: #4a9eff;
-    }
-
-    .search-form {
-    margin: 0;
-    padding: 0;
-    margin-left: auto;
-    }
-
-    @media (max-width: 768px) {
-        .header h1 {
-            font-size: 2rem;
-        }
-
-        .tracker-container {
-            padding: 1.5rem;
-        }
-
-        #manhwaForm {
-            grid-template-columns: 1fr;
-        }
-
-        .manhwa-item {
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1.25rem;
-        }
-
-        .manhwa-info {
-            width: 100%;
-            text-align: center;
-        }
-
-        .manhwa-meta {
-            flex-direction: row;
-            margin-left: auto;
-            margin-right: auto;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .manhwa-actions {
-            width: 100%;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .update-chapter {
-            width: 100%;
-            margin-bottom: 0.5rem;
-        }
-
-        .manhwa-actions button {
-            flex: 1;
-            min-width: 120px;
-            justify-content: center;
-        }
-
-        .filters {
-          flex-direction: column;
-        }
-
-        .modal-content {
-          padding: 2rem;
-          margin: 1rem auto;
-        }
-
-        .modal-title {
-          font-size: 1.5rem;
-        }
-
-        .close {
-          right: 1rem;
-          top: 1rem;
-        }
-
-        .footer {
-          padding: 0.8rem;
-          font-size: 0.7rem;
-          flex-direction: column;
-        }
-  
-        .social-links {
-          gap: 1rem;
-        }
-  
-        .social-links a {
-          font-size: 0.7rem;
-        }
-      }
-
-    @media (max-width: 480px) {
-        .header h1 {
-            font-size: 1.75rem;
-        }
-
-        .tracker-container {
-            padding: 1rem;
-        }
-
-        .manhwa-title {
-            font-size: 1rem;
-        }
-
-        .manhwa-info a {
-            font-size: 0.85rem;
-        }
-
-        .manhwa-meta {
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .manhwa-actions button {
-            padding: 8px;
-            font-size: 0.9rem;
-        }
-
-        .modal-content {
-          padding: 1.5rem;
-        }
-
-        .modal-title {
-          font-size: 1.25rem;
-        }
-
-        #editForm input,
-        .add-url-btn,
-        .save-changes-btn,
-        .url-button {
-          padding: 0.875rem;
-        }
-        .footer {
-          padding: 0.6rem;
-          font-size: 0.6rem;
-        }
-      }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateX(-20px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
-  </style>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -821,203 +94,279 @@
 
   <script>
     let database;
-    let editingManhwaId = null; // Track which manhwa is being edited
-    let allManhwas = []; // Store fetched manhwa data
+    let editingManhwaId = null;
+    let allManhwas = [];
 
-    // Fetch Firebase configuration from Netlify Functions
+    // Fetch Firebase configuration
     fetch('/.netlify/functions/getFirebaseConfig')
       .then(response => response.json())
       .then(firebaseConfig => {
-    firebase.initializeApp(firebaseConfig);
-    database = firebase.database();
+        firebase.initializeApp(firebaseConfig);
+        database = firebase.database();
 
-    const manhwaForm = document.getElementById('manhwaForm');
-    const manhwaList = document.getElementById('manhwaList');
+        // DOM elements
+        const manhwaForm = document.getElementById('manhwaForm');
+        const manhwaList = document.getElementById('manhwaList');
 
-}) // <-- This closes the firebaseConfig => {} block
-  .catch(error => {
-    console.error('Failed to load firebase config:', error);
-  });
+        // Form submission handler
+        manhwaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('manhwaTitle').value;
+            const url = document.getElementById('manhwaUrl').value;
+            const chapter = parseFloat(document.getElementById('lastChapter').value);
+            
+            database.ref('manhwas/' + Date.now()).set({
+                title,
+                url: [url],
+                lastChapter: chapter,
+                lastRead: new Date().toISOString()
+            });
+            
+            manhwaForm.reset();
+        });
 
-    // Modify existing form submit handler
-    manhwaForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('manhwaTitle').value;
-    const url = document.getElementById('manhwaUrl').value;
-    const chapter = parseFloat(document.getElementById('lastChapter').value);
-    
-    database.ref('manhwas/' + Date.now()).set({
-        title,
-        url: [url], // Store as array
-        lastChapter: chapter,
-        lastRead: new Date().toISOString()
-    });
-    
-    manhwaForm.reset();
-    });
+        // Real-time database listener
+        database.ref('manhwas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            allManhwas = [];
+            const domains = new Set();
 
-    database.ref('manhwas').on('value', (snapshot) => {
-      const data = snapshot.val();
-      allManhwas = [];
-      const domains = new Set();
+            for (const manhwaId in data) {
+                const manhwa = data[manhwaId];
+                const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
+                
+                const enhancedManhwa = {
+                    id: manhwaId,
+                    title: manhwa.title,
+                    urls: urls,
+                    lastChapter: manhwa.lastChapter,
+                    lastRead: manhwa.lastRead,
+                    domains: urls.map(url => getDomain(url))
+                };
+                
+                allManhwas.push(enhancedManhwa);
+                enhancedManhwa.domains.forEach(d => domains.add(d));
+            }
 
-      // Process all manhwas and collect domains
-      for (const manhwaId in data) {
-          const manhwa = data[manhwaId];
-          // Ensure URLs are always an array
-          const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
-          
-          // Create enhanced manhwa object
-          const enhancedManhwa = {
-              id: manhwaId,
-              title: manhwa.title,
-              urls: urls,
-              lastChapter: manhwa.lastChapter,
-              lastRead: manhwa.lastRead,
-              // Extract domains for filtering
-              domains: urls.map(url => getDomain(url))
-          };
-          
-          allManhwas.push(enhancedManhwa);
-          // Add domains to Set for filter options
-          enhancedManhwa.domains.forEach(d => domains.add(d));
-      }
+            // Update domain filter
+            const domainSelect = document.getElementById('domainFilter');
+            const currentDomain = domainSelect.value;
+            domainSelect.innerHTML = '<option value="">All Domains</option>';
+            
+            Array.from(domains).sort().forEach(domain => {
+                const option = document.createElement('option');
+                option.value = domain;
+                option.textContent = domain;
+                domainSelect.appendChild(option);
+            });
+            
+            if (Array.from(domains).includes(currentDomain)) {
+                domainSelect.value = currentDomain;
+            }
 
-      // Update domain filter dropdown
-      const domainSelect = document.getElementById('domainFilter');
-      const currentDomain = domainSelect.value;
-      domainSelect.innerHTML = '<option value="">All Domains</option>';
-      
-      // Convert Set to array and sort alphabetically
-      Array.from(domains).sort().forEach(domain => {
-          const option = document.createElement('option');
-          option.value = domain;
-          option.textContent = domain;
-          domainSelect.appendChild(option);
+            processAndDisplayManhwas();
+        });
+
+        // Edit form submission
+        document.getElementById('editForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('editTitle').value;
+            const urlInputs = document.querySelectorAll('#urlsContainer input');
+            const urls = Array.from(urlInputs).map(input => input.value.trim()).filter(url => url);
+            
+            if (urls.length === 0) {
+                alert('Please enter at least one valid URL');
+                return;
+            }
+            
+            database.ref('manhwas/' + editingManhwaId).update({
+                title,
+                url: urls
+            });
+            
+            document.getElementById('editModal').style.display = 'none';
+        });
+
+        // Filter/Sort event listeners
+        document.getElementById('domainFilter').addEventListener('change', processAndDisplayManhwas);
+        document.getElementById('titleFilter').addEventListener('input', processAndDisplayManhwas);
+        document.getElementById('sortBy').addEventListener('change', processAndDisplayManhwas);
+
+      })
+      .catch(error => {
+        console.error('Failed to load firebase config:', error);
       });
-      
-      // Preserve previous domain selection if still valid
-      if (Array.from(domains).includes(currentDomain)) {
-          domainSelect.value = currentDomain;
-      }
 
-      // Process and display the filtered/sorted manhwas
-      processAndDisplayManhwas();
-  });
+    // Process and display manhwas
+    function processAndDisplayManhwas() {
+        const domainFilter = document.getElementById('domainFilter').value;
+        const titleFilter = document.getElementById('titleFilter').value.toLowerCase();
+        const sortBy = document.getElementById('sortBy').value;
+        const manhwaList = document.getElementById('manhwaList');
 
-  function processAndDisplayManhwas() {
-      // Get current filter and sort values
-      const domainFilter = document.getElementById('domainFilter').value;
-      const titleFilter = document.getElementById('titleFilter').value.toLowerCase();
-      const sortBy = document.getElementById('sortBy').value;
+        let processed = allManhwas.filter(manhwa => {
+            const matchesDomain = !domainFilter || manhwa.domains.includes(domainFilter);
+            const matchesTitle = manhwa.title.toLowerCase().includes(titleFilter);
+            return matchesDomain && matchesTitle;
+        });
 
-      // Filter the manhwas
-      let processed = allManhwas.filter(manhwa => {
-          const matchesDomain = !domainFilter || manhwa.domains.includes(domainFilter);
-          const matchesTitle = manhwa.title.toLowerCase().includes(titleFilter);
-          return matchesDomain && matchesTitle;
-      });
+        switch(sortBy) {
+            case 'a-z':
+                processed.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'latest':
+                processed.sort((a, b) => new Date(b.lastRead) - new Date(a.lastRead));
+                break;
+            case 'oldest':
+                processed.sort((a, b) => new Date(a.lastRead) - new Date(b.lastRead));
+                break;
+        }
 
-      // Sort the manhwas
-      switch(sortBy) {
-          case 'a-z':
-              processed.sort((a, b) => a.title.localeCompare(b.title));
-              break;
-          case 'latest':
-              processed.sort((a, b) => new Date(b.lastRead) - new Date(a.lastRead));
-              break;
-          case 'oldest':
-              processed.sort((a, b) => new Date(a.lastRead) - new Date(b.lastRead));
-              break;
-      }
+        manhwaList.innerHTML = '';
+        processed.forEach(manhwa => {
+            const manhwaElement = document.createElement('div');
+            manhwaElement.className = 'manhwa-item';
+            manhwaElement.innerHTML = `
+                <div class="manhwa-info">
+                    <div class="manhwa-title">${manhwa.title}</div>
+                    <div class="manhwa-urls" data-urls='${JSON.stringify(manhwa.urls)}'>
+                        ${manhwa.domains.join(', ')}
+                    </div>
+                    <div class="manhwa-meta">
+                        <div>Last Chapter: ${manhwa.lastChapter}</div>
+                        <div>Last Read: ${getRelativeTimeString(manhwa.lastRead)}</div>
+                    </div>
+                </div>
+                <div class="manhwa-actions">
+                    <input type="number" class="update-chapter" placeholder="New chapter" step="0.1">
+                    <button onclick="updateChapter('${manhwa.id}')">
+                        <i class="fas fa-sync-alt"></i> Update
+                    </button>
+                    <button class="edit-btn" onclick="openEditModal('${manhwa.id}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="delete-btn" onclick="deleteManhwa('${manhwa.id}')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            `;
+
+            manhwaElement.addEventListener('click', (e) => {
+                if (e.target.closest('.manhwa-actions, input, button')) return;
+                const urls = JSON.parse(e.currentTarget.querySelector('.manhwa-urls').dataset.urls);
+                urls.length === 1 ? window.open(urls[0], '_blank') : showUrlModal(urls);
+            });
+
+            manhwaList.appendChild(manhwaElement);
+        });
     }
 
-      // Clear current list
-      manhwaList.innerHTML = '';
-
-      // Create list items
-      processed.forEach(manhwa => {
-          const manhwaElement = document.createElement('div');
-          manhwaElement.className = 'manhwa-item';
-          manhwaElement.innerHTML = `
-              <div class="manhwa-info">
-                  <div class="manhwa-title">${manhwa.title}</div>
-                  <div class="manhwa-urls" data-urls='${JSON.stringify(manhwa.urls)}'>
-                      ${manhwa.domains.join(', ')}
-                  </div>
-                  <div class="manhwa-meta">
-                      <div>Last Chapter: ${manhwa.lastChapter}</div>
-                      <div>Last Read: ${getRelativeTimeString(manhwa.lastRead)}</div>
-                  </div>
-              </div>
-              <div class="manhwa-actions">
-                  <input type="number" class="update-chapter" placeholder="New chapter" step="0.1">
-                  <button onclick="updateChapter('${manhwa.id}')">
-                      <i class="fas fa-sync-alt"></i> Update
-                  </button>
-                  <button class="edit-btn" onclick="openEditModal('${manhwa.id}')">
-                      <i class="fas fa-edit"></i> Edit
-                  </button>
-                  <button class="delete-btn" onclick="deleteManhwa('${manhwa.id}')">
-                      <i class="fas fa-trash-alt"></i> Delete
-                  </button>
-              </div>
-          `;
-
-          // Add click handler for URL selection
-          manhwaElement.addEventListener('click', (e) => {
-              if (e.target.closest('.manhwa-actions, input, button')) return;
-              
-              const urls = JSON.parse(e.currentTarget.querySelector('.manhwa-urls').dataset.urls);
-              if (urls.length === 1) {
-                  window.open(urls[0], '_blank');
-              } else {
-                  showUrlModal(urls);
-              }
-          });
-
-          manhwaList.appendChild(manhwaElement);
-      });
-
-    // Handle edit form submission
-    document.getElementById('editForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('editTitle').value;
-    const urlInputs = document.querySelectorAll('#urlsContainer input');
-    const urls = Array.from(urlInputs).map(input => input.value.trim()).filter(url => url);
-    
-    if (urls.length === 0) {
-        alert('Please enter at least one valid URL');
-        return;
+    // Utility functions
+    function getDomain(url) {
+        try {
+            const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
+            return urlObj.hostname.replace(/^www\./, '');
+        } catch (e) {
+            return url;
+        }
     }
-    
-    database.ref('manhwas/' + editingManhwaId).update({
-        title,
-        url: urls
-    });
-    
-    document.getElementById('editModal').style.display = 'none';
-    });
 
-    // Close modal handlers
+    function showUrlModal(urls) {
+        const modal = document.createElement('div');
+        modal.className = 'modal url-selection-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Select Reading Source</h2>
+                    <p class="modal-subtitle">Choose where you want to continue reading</p>
+                </div>
+                <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                <div class="url-buttons">
+                    ${urls.map(url => `
+                        <button class="url-button" onclick="window.open('${url}', '_blank'); this.closest('.modal').remove()">
+                            <i class="fas fa-external-link-alt"></i>
+                            ${getDomain(url)}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        modal.style.display = 'block';
+        document.body.appendChild(modal);
+        modal.addEventListener('click', (e) => e.target === modal && modal.remove());
+    }
+
+    function getRelativeTimeString(date) {
+        const now = new Date();
+        const past = new Date(date);
+        const diffMs = now - past;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 10) return past.toLocaleDateString();
+        
+        const diffSeconds = Math.floor(diffMs / 1000);
+        const diffMinutes = Math.floor(diffSeconds / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+
+        return diffSeconds < 60 ? `${diffSeconds} seconds ago` :
+            diffMinutes < 60 ? `${diffMinutes} minute${diffMinutes === 1 ? '' : 's'} ago` :
+            diffHours < 24 ? `${diffHours} hour${diffHours === 1 ? '' : 's'} ago` :
+            `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+    }
+
+    // Window functions
+    window.updateChapter = (manhwaId) => {
+        const newChapter = parseFloat(document.querySelector(`#manhwaList [onclick="updateChapter('${manhwaId}')"]`).previousElementSibling.value);
+        if (!isNaN(newChapter)) {
+            database.ref('manhwas/' + manhwaId).update({
+                lastChapter: newChapter,
+                lastRead: new Date().toISOString()
+            });
+        }
+    };
+
+    window.deleteManhwa = (manhwaId) => {
+        if (confirm('Are you sure you want to delete this manhwa?')) {
+            database.ref('manhwas/' + manhwaId).remove();
+        }
+    };
+
+    window.openEditModal = (manhwaId) => {
+        editingManhwaId = manhwaId;
+        database.ref('manhwas/' + manhwaId).once('value', (snapshot) => {
+            const manhwa = snapshot.val();
+            const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
+            document.getElementById('editTitle').value = manhwa.title;
+            const container = document.getElementById('urlsContainer');
+            container.innerHTML = '';
+            urls.forEach((url, index) => addUrlInput(url, index === 0));
+            document.getElementById('editModal').style.display = 'block';
+        });
+    };
+
+    window.addUrlInput = (value = '', isRequired = false) => {
+        const container = document.getElementById('urlsContainer');
+        const group = document.createElement('div');
+        group.className = 'url-input-group';
+        group.innerHTML = `
+            <input type="url" value="${value}" placeholder="Manhwa URL" ${isRequired ? 'required' : ''}>
+            <button type="button" class="delete-btn" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        container.appendChild(group);
+    };
+
+    // Modal close handlers
     document.querySelector('.close').onclick = () => {
-    document.getElementById('editModal').style.display = 'none';
+        document.getElementById('editModal').style.display = 'none';
     };
 
     window.onclick = (e) => {
-    if (e.target === document.getElementById('editModal')) {
-        document.getElementById('editModal').style.display = 'none';
-    }
+        if (e.target === document.getElementById('editModal')) {
+            document.getElementById('editModal').style.display = 'none';
+        }
     };
-        // Add domain extraction function
-    function getDomain(url) {
-      try {
-        const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
-        return urlObj.hostname.replace(/^www\./, '');
-      } catch (e) {
-        return url;
-      }
-    }
 
     document.getElementById('domainFilter').addEventListener('change', processAndDisplayManhwas);
     document.getElementById('titleFilter').addEventListener('input', processAndDisplayManhwas);
@@ -1187,34 +536,6 @@
         group.appendChild(input);
         group.appendChild(removeBtn);
         container.appendChild(group);
-    }
-    function showUrlModal(urls) {
-      const modal = document.createElement('div');
-      modal.className = 'modal url-selection-modal';
-      modal.innerHTML = `
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title">Select Reading Source</h2>
-            <p class="modal-subtitle">Choose where you want to continue reading</p>
-          </div>
-          <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
-          <div class="url-buttons">
-            ${urls.map(url => `
-              <button class="url-button" onclick="window.open('${url}', '_blank'); this.closest('.modal').remove()">
-                <i class="fas fa-external-link-alt"></i>
-                ${getDomain(url)}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-      
-      modal.style.display = 'block';
-      document.body.appendChild(modal);
-      
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
-      });
     }
     // Add function to format relative time
     function getRelativeTimeString(date) {
