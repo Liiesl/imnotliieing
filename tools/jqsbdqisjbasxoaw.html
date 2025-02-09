@@ -22,18 +22,6 @@
         padding-top: 6rem;
     }
 
-    .tools-title {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(45deg, #ffffff, #b0b0b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
     .header {
         text-align: center;
         margin-bottom: 2rem;
@@ -487,114 +475,6 @@
     min-width: 150px;
   }
 
-  .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(10, 10, 10, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 1rem;
-        text-align: center;
-        font-size: 0.85rem;
-        color: #888;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-  
-      .footer p {
-        margin: 0.5rem 0;
-      }
-  
-      .footer a {
-        color: #fff;
-        text-decoration: none;
-        transition: color 0.3s ease;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-      }
-  
-      .footer a:hover {
-        color: #4a9eff;
-        background: rgba(74, 158, 255, 0.1);
-      }
-  
-      .social-links {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        margin-top: 0.5rem;
-      }
-  
-      .social-links a {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-  
-      .social-links a:hover {
-        transform: translateY(-2px);
-      }
-
-    .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10, 10, 10, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .search-bar {
-    display: flex;
-    align-items: right;
-    margin-left: auto;
-    gap: 0.5rem;
-    }
-
-    #searchInput {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    color: #fff;
-    outline: none;
-    width: 200px;
-    }
-
-    #searchInput::placeholder {
-    color: #b0b0b0;
-    }
-
-    .search-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    color: #fff;
-    cursor: pointer;
-    }
-
-    .search-button:hover {
-    background: rgba(74, 158, 255, 0.1);
-    color: #4a9eff;
-    }
-
-    .search-form {
-    margin: 0;
-    padding: 0;
-    margin-left: auto;
-    }
-
     @media (max-width: 768px) {
         .header h1 {
             font-size: 2rem;
@@ -661,20 +541,6 @@
           right: 1rem;
           top: 1rem;
         }
-
-        .footer {
-          padding: 0.8rem;
-          font-size: 0.7rem;
-          flex-direction: column;
-        }
-  
-        .social-links {
-          gap: 1rem;
-        }
-  
-        .social-links a {
-          font-size: 0.7rem;
-        }
       }
 
     @media (max-width: 480px) {
@@ -719,10 +585,6 @@
         .url-button {
           padding: 0.875rem;
         }
-        .footer {
-          padding: 0.6rem;
-          font-size: 0.6rem;
-        }
       }
 
     @keyframes fadeIn {
@@ -742,16 +604,9 @@
 <body>
   <div id="sidebar-container"></div>
   <header class="header">
-    <form class="search-form" onsubmit="handleSearch(event)">
-        <div class="search-bar">
-          <input type="text" placeholder="Search tools..." id="searchInput" name="q">
-          <button type="submit" class="search-button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-    </form>
-</header>
- <h1 class="tools-title">Manhwa Tracker</h1>
+    <h1>Manhwa Tracker</h1>
+  </header>
+  
   <div class="container">
     <div class="tracker-container">
       <form id="manhwaForm">
@@ -801,29 +656,18 @@
       </div>
     </div>
 
-    <footer class="footer">
-        <div class="social-links">
-            <a href="https://youtube.com/@Vfrix" target="_blank">
-                <i class="fab fa-youtube"></i>
-                <span>Youtube</span>
-            </a>
-            <a href="https://github.com/Liiesl" target="_blank">
-                <i class="fab fa-github"></i>
-                <span>Github</span>
-            </a>
-            <a href="https://instagram.com/suryaalingga" target="_blank">
-                <i class="fab fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-        </div>
-        <p>&copy; 2023 Imnotliieing. All rights reserved. | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
-    </footer>
-
   <script>
-    // Fetch Firebase configuration from Netlify Functions
-    fetch('/.netlify/functions/getFirebaseConfig')
-      .then(response => response.json())
-      .then(firebaseConfig => {
+    // Firebase configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyC_8UN4UgD2jj_KkNO7AHb80i5GMlHwn0w",
+    authDomain: "imnotliieing.firebaseapp.com",
+    projectId: "imnotliieing",
+    storageBucket: "imnotliieing.firebasestorage.app",
+    messagingSenderId: "268841280530",
+    appId: "1:268841280530:web:e500cb295be852de7da4cb",
+    measurementId: "G-DL9XTB89H0"
+    };
+
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
@@ -1054,6 +898,36 @@
       }
     };
 
+    // Sidebar loading code
+    window.addEventListener('DOMContentLoaded', function () {
+      fetch('/sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('sidebar-container').innerHTML = data;
+          const sidebar = document.getElementById('sidebar');
+          const sidebarOverlay = document.getElementById('sidebarOverlay');
+          const menuButton = document.getElementById('menuButton');
+          
+          if (!sidebar || !sidebarOverlay || !menuButton) {
+            console.error('Sidebar elements not found.');
+            return;
+          }
+          
+          menuButton.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('open');
+          });
+          
+          sidebarOverlay.addEventListener('click', function () {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+          });
+        })
+        .catch(error => {
+          console.error('Failed to load sidebar:', error);
+        });
+    });
+
     // Add to existing script
     function openEditModal(manhwaId) {
     editingManhwaId = manhwaId;
@@ -1192,90 +1066,7 @@
       }
     `;
     document.head.appendChild(style);
-  })
-  console.error('failed to load firebase config')
 
-    // Sidebar loading code
-    window.addEventListener('DOMContentLoaded', function () {
-      fetch('/sidebar.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('sidebar-container').innerHTML = data;
-          const sidebar = document.getElementById('sidebar');
-          const sidebarOverlay = document.getElementById('sidebarOverlay');
-          const menuButton = document.getElementById('menuButton');
-          
-          if (!sidebar || !sidebarOverlay || !menuButton) {
-            console.error('Sidebar elements not found.');
-            return;
-          }
-          
-          menuButton.addEventListener('click', function () {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('open');
-          });
-          
-          sidebarOverlay.addEventListener('click', function () {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('open');
-          });
-        })
-        .catch(error => {
-          console.error('Failed to load sidebar:', error);
-        });
-    });
-            // Search handler for all pages
-            function handleSearch(event) {
-            event.preventDefault();
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            const baseUrl = '/index.html'; // Always points to root
-
-            if (searchTerm) {
-                window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
-            } else {
-                window.location.href = baseUrl;
-            }
-            }
-
-        // On home page load
-         window.addEventListener('DOMContentLoaded', function () {
-            // Parse URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchTerm = urlParams.get('search');
-
-            // Only run on home page (root index.html)
-            if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-                // Initialize search if parameter exists
-                if (searchTerm) {
-                    document.getElementById('searchInput').value = searchTerm;
-                    filterSections(searchTerm.toLowerCase());
-                }
-
-                // Initialize search functionality
-                document.getElementById('searchInput').addEventListener('input', function(e) {
-                    filterSections(e.target.value.toLowerCase());
-                });
-            }
-
-        function filterSections(term) {
-            const sections = document.querySelectorAll('section:not(.tools-section)');
-            const cards = document.querySelectorAll('.card');
-
-            sections.forEach(section => {
-            section.classList.toggle('hidden-section', term !== '');
-            });
-
-            cards.forEach(card => {
-            const title = card.querySelector('.card-title').textContent.toLowerCase();
-            const description = card.querySelector('.card-description').textContent.toLowerCase();
-            card.style.display = (title.includes(term) || description.includes(term)) 
-                ? 'flex' 
-                : 'none';
-            });
-
-            document.querySelector('.tools-section').style.display = 'block';
-        }
-        });
   </script>
 </body>
 </html>
