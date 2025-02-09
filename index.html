@@ -13,6 +13,7 @@
   <!-- iOS Support -->
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -28,6 +29,12 @@
         </button>
       </div>
     </form>
+    <div id="auth-container">
+      <button onclick="signInWithGoogle()">
+          <i class="fab fa-google"></i> Sign in with Google
+      </button>
+      <button onclick="logout()">Logout</button>
+  </div>
   </header>
   <div class="container">
     <section class="home-section">
@@ -107,114 +114,171 @@
       <p>&copy; 2023 Imnotliieing. All rights reserved. | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
     </footer>
   </div>
-
   <script>
-    function openMinesweeper() {
-      window.location.href = 'games/minesweeper.html';
-    }
+    fetch('/.netlify/functions/getFirebaseConfig')
+      .then(response => response.json())
+      .then(firebaseConfig => {
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-    function showComingSoon() {
-      alert("This feature is coming soon! Stay tuned for updates.");
-    }
-
-    function openLongerAppearance() {
-      window.location.href = 'tools/Longer-Appearance-Srt.html';
-    }
-
-    function openqrcode() {
-      window.location.href = 'tools/qrcode.html';
-    }
-
-    // DOMContentLoaded event listener
-    window.addEventListener('DOMContentLoaded', function () {
-      // Existing code for fetching sidebar.html
-      fetch('/sidebar.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('sidebar-container').innerHTML = data;
-
-          const sidebar = document.getElementById('sidebar');
-          const sidebarOverlay = document.getElementById('sidebarOverlay');
-          const menuButton = document.getElementById('menuButton');
-
-          if (!sidebar || !sidebarOverlay || !menuButton) {
-            console.error('Sidebar elements not found. Ensure sidebar.html is properly loaded.');
-            return;
-          }
-
-          menuButton.addEventListener('click', function () {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('open');
-          });
-
-          sidebarOverlay.addEventListener('click', function () {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('open');
-          });
-        })
-        .catch(error => {
-          console.error('Failed to load sidebar:', error);
-        });
-
-      // Register Service Worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('ServiceWorker registration successful with scope:', registration.scope);
-          })
-          .catch(err => {
-            console.log('ServiceWorker registration failed:', err);
-          });
-      }
-
-      // Existing search functionality
-      const urlParams = new URLSearchParams(window.location.search);
-      const searchTerm = urlParams.get('search');
-
-      if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-        if (searchTerm) {
-          document.getElementById('searchInput').value = searchTerm;
-          filterSections(searchTerm.toLowerCase());
+        // Google Sign-In function
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("Google Sign-In successful:", user);
+                    // Redirect or load user-specific data
+                    window.location.href = "/dashboard.html"; // Example redirect
+                })
+                .catch((error) => {
+                    console.error("Error during Google Sign-In:", error.message);
+                    alert("Failed to sign in with Google. Please try again.");
+                });
         }
 
-        document.getElementById('searchInput').addEventListener('input', function (e) {
-          filterSections(e.target.value.toLowerCase());
+        // Logout function
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    console.log("User logged out");
+                    // Redirect to login page or show login options
+                    window.location.href = "/"; // Example redirect
+                })
+                .catch((error) => {
+                    console.error("Error logging out:", error.message);
+                });
+        }
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User is logged in:", user);
+                // Load user-specific data or update UI
+                document.getElementById("auth-container").innerHTML = `
+                    <p>Welcome, ${user.displayName}!</p>
+                    <button onclick="logout()">Logout</button>
+                `;
+            } else {
+                console.log("No user is logged in");
+                // Show login options
+                document.getElementById("auth-container").innerHTML = `
+                    <button onclick="signInWithGoogle()">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </button>
+                `;
+            }
         });
-      }
 
-      function filterSections(term) {
-        let found = false;
-        const sections = document.querySelectorAll('section:not(.tools-section)');
-        const cards = document.querySelectorAll('.card');
+        // Existing functions (openMinesweeper, showComingSoon, etc.)
+        function openMinesweeper() {
+            window.location.href = 'games/minesweeper.html';
+        }
 
-        sections.forEach(section => {
-          section.classList.toggle('hidden-section', term !== '');
+        function showComingSoon() {
+            alert("This feature is coming soon! Stay tuned for updates.");
+        }
+
+        function openLongerAppearance() {
+            window.location.href = 'tools/Longer-Appearance-Srt.html';
+        }
+
+        function openqrcode() {
+            window.location.href = 'tools/qrcode.html';
+        }
+
+        // DOMContentLoaded event listener
+        window.addEventListener('DOMContentLoaded', function () {
+            // Existing code for fetching sidebar.html
+            fetch('/sidebar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('sidebar-container').innerHTML = data;
+
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebarOverlay = document.getElementById('sidebarOverlay');
+                    const menuButton = document.getElementById('menuButton');
+
+                    if (!sidebar || !sidebarOverlay || !menuButton) {
+                        console.error('Sidebar elements not found. Ensure sidebar.html is properly loaded.');
+                        return;
+                    }
+
+                    menuButton.addEventListener('click', function () {
+                        sidebar.classList.toggle('open');
+                        sidebarOverlay.classList.toggle('open');
+                    });
+
+                    sidebarOverlay.addEventListener('click', function () {
+                        sidebar.classList.remove('open');
+                        sidebarOverlay.classList.remove('open');
+                    });
+                })
+                .catch(error => {
+                    console.error('Failed to load sidebar:', error);
+                });
+
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            }
+
+            // Existing search functionality
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+
+            if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+                if (searchTerm) {
+                    document.getElementById('searchInput').value = searchTerm;
+                    filterSections(searchTerm.toLowerCase());
+                }
+
+                document.getElementById('searchInput').addEventListener('input', function (e) {
+                    filterSections(e.target.value.toLowerCase());
+                });
+            }
+
+            function filterSections(term) {
+                let found = false;
+                const sections = document.querySelectorAll('section:not(.tools-section)');
+                const cards = document.querySelectorAll('.card');
+
+                sections.forEach(section => {
+                    section.classList.toggle('hidden-section', term !== '');
+                });
+
+                cards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const description = card.querySelector('.card-description').textContent.toLowerCase();
+                    const match = title.includes(term) || description.includes(term);
+                    card.style.display = match ? 'flex' : 'none';
+                    if (match) found = true;
+                });
+
+                document.querySelector('.no-results').style.display = found ? 'none' : 'block';
+            }
         });
 
-        cards.forEach(card => {
-          const title = card.querySelector('.card-title').textContent.toLowerCase();
-          const description = card.querySelector('.card-description').textContent.toLowerCase();
-          const match = title.includes(term) || description.includes(term);
-          card.style.display = match ? 'flex' : 'none';
-          if (match) found = true;
-        });
+        // Search handler for all pages
+        function handleSearch(event) {
+            event.preventDefault();
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const baseUrl = '/index.html'; // Always points to root
 
-        document.querySelector('.no-results').style.display = found ? 'none' : 'block';
-      }
-    });
-
-    // Search handler for all pages
-    function handleSearch(event) {
-      event.preventDefault();
-      const searchTerm = document.getElementById('searchInput').value.trim();
-      const baseUrl = '/index.html'; // Always points to root
-
-      if (searchTerm) {
-          window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
-      } else {
-          window.location.href = baseUrl;
-      }
-    }
-  </script>
+            if (searchTerm) {
+                window.location.href = `${baseUrl}?search=${encodeURIComponent(searchTerm)}`;
+            } else {
+                window.location.href = baseUrl;
+            }
+        }
+      })
+</script>
 </body>
 </html>
