@@ -27,7 +27,13 @@
  <h1 class="tools-title">Manhwa Tracker</h1>
   <div class="container">
     <div class="tracker-container">
-      <form id="manhwaForm">
+      <div class="form-toggle-container">
+        <button type="button" class="toggle-form-btn" onclick="toggleForm()">
+          <span class="toggle-text">Add New Manhwa</span>
+          <i class="fas fa-chevron-up toggle-arrow"></i>
+        </button>
+      </div>
+      <form id="manhwaForm" class="collapsible-form collapsed">
         <input type="text" id="manhwaTitle" placeholder="Enter manhwa title" required>
         <input type="url" id="manhwaUrl" placeholder="Enter manhwa URL" required>
         <input type="number" id="lastChapter" placeholder="Last chapter read" step="0.1" required>
@@ -37,16 +43,25 @@
       </form>
       <div class="controls">
         <div class="filters">
-          <select id="domainFilter" class="filter-control">
-            <option value="">All Domains</option>
-          </select>
-          <input type="text" id="titleFilter" class="filter-control" placeholder="Filter by title...">
+          <div class="filter-group">
+            <input type="text" id="titleFilter" class="filter-control" placeholder="Search by title...">
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="filter-group">
+            <select id="domainFilter" class="filter-control">
+              <option value="">All Site</option>
+            </select>
+            <i class="fas fa-globe"></i>
+          </div>
         </div>
-        <select id="sortBy" class="sort-control">
-          <option value="a-z">A-Z (Title)</option>
-          <option value="latest">Latest Read</option>
-          <option value="oldest">Oldest Read</option>
-        </select>
+        <div class="sort-group">
+          <select id="sortBy" class="sort-control">
+            <option value="latest">Latest Read</option>
+            <option value="oldest">Oldest Read</option>
+            <option value="a-z">A-Z (Title)</option>
+          </select>
+          <i class="fas fa-sort"></i>
+        </div>
       </div>
       <div id="manhwaList" class="manhwa-list"></div>
     </div>
@@ -59,6 +74,7 @@
         <span class="close">&times;</span>
         <form id="editForm">
           <input type="text" id="editTitle" placeholder="Manhwa Title" required>
+          <input type="url" id="editCoverUrl" placeholder="Manhwa Cover URL"> 
           <div id="urlsContainer">
             <!-- URL inputs will be added here dynamically -->
           </div>
@@ -118,6 +134,7 @@
             database.ref('manhwas/' + Date.now()).set({
                 title,
                 url: [url],
+                coverUrl: '',
                 lastChapter: chapter,
                 lastRead: new Date().toISOString()
             });
@@ -141,6 +158,7 @@
                     urls: urls,
                     lastChapter: manhwa.lastChapter,
                     lastRead: manhwa.lastRead,
+                    coverUrl: manhwa.coverUrl,
                     domains: urls.map(url => getDomain(url))
                 };
                 
@@ -151,7 +169,7 @@
             // Update domain filter
             const domainSelect = document.getElementById('domainFilter');
             const currentDomain = domainSelect.value;
-            domainSelect.innerHTML = '<option value="">All Domains</option>';
+            domainSelect.innerHTML = '<option value="">All Site</option>';
             
             Array.from(domains).sort().forEach(domain => {
                 const option = document.createElement('option');
@@ -171,6 +189,7 @@
         document.getElementById('editForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const title = document.getElementById('editTitle').value;
+            const coverUrl = document.getElementById('editCoverUrl').value;
             const urlInputs = document.querySelectorAll('#urlsContainer input');
             const urls = Array.from(urlInputs).map(input => input.value.trim()).filter(url => url);
             
@@ -181,6 +200,7 @@
             
             database.ref('manhwas/' + editingManhwaId).update({
                 title,
+                coverUrl,
                 url: urls
             });
             
@@ -191,12 +211,11 @@
         document.getElementById('domainFilter').addEventListener('change', processAndDisplayManhwas);
         document.getElementById('titleFilter').addEventListener('input', processAndDisplayManhwas);
         document.getElementById('sortBy').addEventListener('change', processAndDisplayManhwas);
-
       })
       .catch(error => {
         console.error('Failed to load firebase config:', error);
       });
-
+      
     // Process and display manhwas
     function processAndDisplayManhwas() {
         const domainFilter = document.getElementById('domainFilter').value;
@@ -227,27 +246,38 @@
             const manhwaElement = document.createElement('div');
             manhwaElement.className = 'manhwa-item';
             manhwaElement.innerHTML = `
+            <div class="manhwa-main-info">
+                <div class="manhwa-cover">
+                    <img src="${manhwa.coverUrl || 'https://user-uploads.perchance.org/file/be95205f807ff339678a57fc16f3474b.png'}" alt="Manhwa Cover" class="cover-image">
+                </div>
                 <div class="manhwa-info">
                     <div class="manhwa-title">${manhwa.title}</div>
-                    <div class="manhwa-urls" data-urls='${JSON.stringify(manhwa.urls)}'>
-                        ${manhwa.domains.join(', ')}
-                    </div>
                     <div class="manhwa-meta">
-                        <div>Last Chapter: ${manhwa.lastChapter}</div>
-                        <div>Last Read: ${getRelativeTimeString(manhwa.lastRead)}</div>
+                        <div class="manhwa-urls" data-urls='${JSON.stringify(manhwa.urls)}'>
+                        ${manhwa.domains.join(', ')}
+                        </div>
+                        <div>Chapter: ${manhwa.lastChapter}</div>
                     </div>
+                    <div>${getRelativeTimeString(manhwa.lastRead)}</div>
                 </div>
+            </div>
                 <div class="manhwa-actions">
-                    <input type="number" class="update-chapter" placeholder="New chapter" step="0.1">
-                    <button onclick="updateChapter('${manhwa.id}')">
-                        <i class="fas fa-sync-alt"></i> Update
-                    </button>
+                  <div class="update-chapter-container">
+                      <button class="chapter-btn" onclick="decrementChapter(this)"><i class="fas fa-chevron-left"></i></button>
+                      <input type="number" id="updateChapter-${manhwa.id}" class="update-chapter" placeholder="${manhwa.lastChapter + 1}">
+                      <button class="chapter-btn" onclick="incrementChapter(this)"><i class="fas fa-chevron-right"></i></button>
+                      <button onclick="updateChapter('${manhwa.id}')">
+                          <i class="fas fa-sync-alt"></i> Update
+                      </button>
+                  </div>
+                  <div class = "manhwa-db-buttons">
                     <button class="edit-btn" onclick="openEditModal('${manhwa.id}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
                     <button class="delete-btn" onclick="deleteManhwa('${manhwa.id}')">
                         <i class="fas fa-trash-alt"></i> Delete
                     </button>
+                  </div>
                 </div>
             `;
 
@@ -316,13 +346,29 @@
 
     // Window functions
     window.updateChapter = (manhwaId) => {
-        const newChapter = parseFloat(document.querySelector(`#manhwaList [onclick="updateChapter('${manhwaId}')"]`).previousElementSibling.value);
+        const input = document.getElementById(`updateChapter-${manhwaId}`);
+        const newChapter = parseFloat(input.value);
         if (!isNaN(newChapter)) {
             database.ref('manhwas/' + manhwaId).update({
                 lastChapter: newChapter,
                 lastRead: new Date().toISOString()
             });
         }
+    };
+
+    // Increment/Decrement functions
+    window.incrementChapter = function(button) {
+        const container = button.closest('.update-chapter-container');
+        const input = container.querySelector('.update-chapter');
+        const currentValue = parseFloat(input.value) || parseFloat(input.placeholder);
+        input.value = currentValue + 1;
+    };
+
+    window.decrementChapter = function(button) {
+        const container = button.closest('.update-chapter-container');
+        const input = container.querySelector('.update-chapter');
+        const currentValue = parseFloat(input.value) || parseFloat(input.placeholder);
+        input.value = Math.max(currentValue - 1, 0);
     };
 
     window.deleteManhwa = (manhwaId) => {
@@ -337,6 +383,7 @@
             const manhwa = snapshot.val();
             const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
             document.getElementById('editTitle').value = manhwa.title;
+            document.getElementById('editCoverUrl').value = manhwa.coverUrl || ''; // Add cover URL input
             const container = document.getElementById('urlsContainer');
             container.innerHTML = '';
             urls.forEach((url, index) => addUrlInput(url, index === 0));
@@ -396,8 +443,6 @@
       }
     `;
     document.head.appendChild(style);
-
-  console.error('failed to load firebase config')
 
     // Sidebar loading code
     window.addEventListener('DOMContentLoaded', function () {
@@ -563,6 +608,20 @@
         return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
       }
     }
+    function toggleForm() {
+    const form = document.getElementById('manhwaForm');
+    const toggleBtn = document.querySelector('.toggle-form-btn');
+    const toggleText = toggleBtn.querySelector('.toggle-text');
+    
+    form.classList.toggle('collapsed');
+    
+    // Update button text based on form state
+    if (form.classList.contains('collapsed')) {
+      toggleText.textContent = 'Add New Manhwa';
+    } else {
+      toggleText.textContent = 'Close Form';
+    }
+  }
   </script>
 </body>
 </html>
