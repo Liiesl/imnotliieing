@@ -113,16 +113,10 @@
     let editingManhwaId = null;
     let allManhwas = [];
 
-    const firebaseConfig = {
-    apiKey: "AIzaSyC_8UN4UgD2jj_KkNO7AHb80i5GMlHwn0w",
-    authDomain: "imnotliieing.firebaseapp.com",
-    projectId: "imnotliieing",
-    storageBucket: "imnotliieing.firebasestorage.app",
-    messagingSenderId: "268841280530",
-    appId: "1:268841280530:web:e500cb295be852de7da4cb",
-    measurementId: "G-DL9XTB89H0"
-    };
-
+    // Fetch Firebase configuration
+    fetch('/.netlify/functions/getFirebaseConfig')
+      .then(response => response.json())
+      .then(firebaseConfig => {
         firebase.initializeApp(firebaseConfig);
         database = firebase.database();
 
@@ -217,7 +211,11 @@
         document.getElementById('domainFilter').addEventListener('change', processAndDisplayManhwas);
         document.getElementById('titleFilter').addEventListener('input', processAndDisplayManhwas);
         document.getElementById('sortBy').addEventListener('change', processAndDisplayManhwas);
-
+      })
+      .catch(error => {
+        console.error('Failed to load firebase config:', error);
+      });
+      
     // Process and display manhwas
     function processAndDisplayManhwas() {
         const domainFilter = document.getElementById('domainFilter').value;

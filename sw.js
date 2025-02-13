@@ -7,6 +7,14 @@ const ASSETS = [
   '/games/minesweeper.html',
   '/tools/Longer-Appearance.html',
   '/tools/qrcode.html',
+  '/tools/Manhwa-Tracker.html',
+  '/auth.css',
+  '/styles.css',
+  '/login.html',
+  '/manhwa.css',
+  '/signup.html',
+  '/scripts/auth.js',
+  'scripts/firebase-auth.js'
   // Add other essential assets here
 ];
 

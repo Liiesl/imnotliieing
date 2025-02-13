@@ -1,4 +1,14 @@
 <!-- sidebar.html -->
+<div id="logout-modal" class="modal">
+    <div class="modal-content">
+      <p>Are you sure you want to log out?</p>
+      <div class="modal-buttons">
+        <button id="confirm-logout" class="auth-button">Yes, Log Out</button>
+        <button id="cancel-logout" class="auth-button google">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="sidebar" id="sidebar">
     <ul>
@@ -8,12 +18,54 @@
         <li><a href="/tools/qrcode.html">QR Code Scanner</a></li>
         <li><a href="/tools/manhwa-tracker.html">Manhwa Tracker</a></li>
         <li><a href="#">Coming Soon</a></li>
+        <!-- Auth buttons container -->
+        <li id="auth-button-container" class="auth-buttons">
+            <a href="/login.html" id="login-button">Login</a>
+            <button id="logout-button" onclick="signOut()">Logout</button>
+        </li>
     </ul>
 </div>
 
 <button id="menuButton" class="menu-button">&#9776;</button>
 
 <style>
+    /* Add this CSS for the modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgba(43, 43, 43, 0.95);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons .auth-button {
+  width: auto;
+  padding: 0.75rem 1.5rem;
+}
+
     /* Sidebar Styling */
     .sidebar {
         display: block;
@@ -61,6 +113,33 @@
         color: #4a9eff;
     }
 
+    /* Auth Buttons Styling */
+    .auth-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    #login-button, #logout-button {
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: none;
+        border: none;
+        text-align: left;
+        width: 100%;
+        display: none;
+    }
+
+    #login-button:hover, #logout-button:hover {
+        color: #4a9eff;
+        background: rgba(74, 158, 255, 0.1);
+    }
+
     /* Overlay Styling */
     .sidebar-overlay {
         position: fixed;
@@ -103,4 +182,15 @@
         transform: scale(1.05);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
     }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
+
+<!-- Include Firebase and Auth Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+<script type="module" src="/scripts/firebase-auth.js"></script>
+<script type="module" src="/scripts/auth.js"></script>

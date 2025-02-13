@@ -10,6 +10,7 @@
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
@@ -24,6 +25,7 @@
         </div>
     </form>
 </header>
+<section class="main-section">
  <h1 class="tools-title">Manhwa Tracker</h1>
   <div class="container">
     <div class="tracker-container">
@@ -89,6 +91,7 @@
         </form>
       </div>
     </div>
+  </section>
 
     <footer class="footer">
         <div class="social-links">
@@ -118,6 +121,7 @@
       .then(response => response.json())
       .then(firebaseConfig => {
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth()
         database = firebase.database();
 
         // DOM elements
@@ -126,12 +130,15 @@
 
         // Form submission handler
         manhwaForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+          e.preventDefault();
+          const user = firebase.auth().currentUser;
+          if (!user) return alert('Please login first');
+    
             const title = document.getElementById('manhwaTitle').value;
             const url = document.getElementById('manhwaUrl').value;
             const chapter = parseFloat(document.getElementById('lastChapter').value);
             
-            database.ref('manhwas/' + Date.now()).set({
+            database.ref(`users/${user.uid}/manhwas/${Date.now()}`).set({
                 title,
                 url: [url],
                 coverUrl: '',
@@ -143,7 +150,9 @@
         });
 
         // Real-time database listener
-        database.ref('manhwas').on('value', (snapshot) => {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+          database.ref(`users/${user.uid}/manhwas`).on('value', (snapshot) => {
             const data = snapshot.val();
             allManhwas = [];
             const domains = new Set();
@@ -183,11 +192,127 @@
             }
 
             processAndDisplayManhwas();
+          });
+          } else {
+            document.getElementById('manhwaList').innerHTML = '<p>Please login to view your tracked manhwas</p>';
+          }
         });
+
+        // Process and display manhwas
+        function processAndDisplayManhwas() {
+            const domainFilter = document.getElementById('domainFilter').value;
+            const titleFilter = document.getElementById('titleFilter').value.toLowerCase();
+            const sortBy = document.getElementById('sortBy').value;
+            const manhwaList = document.getElementById('manhwaList');
+
+            let processed = allManhwas.filter(manhwa => {
+                const matchesDomain = !domainFilter || manhwa.domains.includes(domainFilter);
+                const matchesTitle = manhwa.title.toLowerCase().includes(titleFilter);
+                return matchesDomain && matchesTitle;
+            });
+
+            switch(sortBy) {
+                case 'a-z':
+                    processed.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'latest':
+                    processed.sort((a, b) => new Date(b.lastRead) - new Date(a.lastRead));
+                    break;
+                case 'oldest':
+                    processed.sort((a, b) => new Date(a.lastRead) - new Date(b.lastRead));
+                    break;
+            }
+
+            manhwaList.innerHTML = '';
+            processed.forEach(manhwa => {
+                const manhwaElement = document.createElement('div');
+                manhwaElement.className = 'manhwa-item';
+                manhwaElement.innerHTML = `
+                <div class="manhwa-main-info">
+                    <div class="manhwa-cover">
+                        <img src="${manhwa.coverUrl || 'https://user-uploads.perchance.org/file/be95205f807ff339678a57fc16f3474b.png'}" alt="Manhwa Cover" class="cover-image">
+                    </div>
+                    <div class="manhwa-info">
+                        <div class="manhwa-title">${manhwa.title}</div>
+                        <div class="manhwa-meta">
+                            <div class="manhwa-urls" data-urls='${JSON.stringify(manhwa.urls)}'>
+                            ${manhwa.domains.join(', ')}
+                            </div>
+                            <div>Chapter: ${manhwa.lastChapter}</div>
+                        </div>
+                        <div>${getRelativeTimeString(manhwa.lastRead)}</div>
+                    </div>
+                </div>
+                <div class="manhwa-actions">
+                    <div class="update-chapter-container">
+                        <button class="chapter-btn" onclick="decrementChapter('${manhwa.id}')">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <input type="number" 
+                              id="updateChapter-${manhwa.id}" 
+                              class="update-chapter" 
+                              value="${manhwa.lastChapter + 1}"
+                              min="0"
+                              step="1">
+                        <button class="chapter-btn" onclick="incrementChapter('${manhwa.id}')">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button onclick="updateChapter('${manhwa.id}')">
+                            <i class="fas fa-sync-alt"></i> Update
+                        </button>
+                    </div>
+                    <div class="manhwa-db-buttons">
+                        <button class="edit-btn" onclick="openEditModal('${manhwa.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="delete-btn" onclick="deleteManhwa('${manhwa.id}')">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                `;
+
+                manhwaElement.addEventListener('click', (e) => {
+                    if (e.target.closest('.manhwa-actions, input, button')) return;
+                    const urls = JSON.parse(e.currentTarget.querySelector('.manhwa-urls').dataset.urls);
+                    urls.length === 1 ? window.open(urls[0], '_blank') : showUrlModal(urls);
+                });
+
+                manhwaList.appendChild(manhwaElement);
+            });
+        }
+
+        // Update chapter functions
+        window.updateChapter = function(manhwaId) {
+          const user = firebase.auth().currentUser;
+          if (!user) return alert('Please login first');
+            const input = document.getElementById(`updateChapter-${manhwaId}`);
+            const newChapter = parseFloat(input.value);
+            if (!isNaN(newChapter) && newChapter >= 0) {
+                database.ref(`users/${user.uid}/manhwas/${manhwaId}`).update({
+                    lastChapter: newChapter,
+                    lastRead: new Date().toISOString()
+                });
+            }
+        };
+
+        window.incrementChapter = function(manhwaId) {
+            const input = document.getElementById(`updateChapter-${manhwaId}`);
+            const currentValue = parseFloat(input.value) || 0;
+            input.value = currentValue + 1;
+        };
+
+        window.decrementChapter = function(manhwaId) {
+            const input = document.getElementById(`updateChapter-${manhwaId}`);
+            const currentValue = parseFloat(input.value) || 0;
+            input.value = Math.max(currentValue - 1, 0);
+        };
 
         // Edit form submission
         document.getElementById('editForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            const user = firebase.auth().currentUser;
+            if (!user) return alert('Please login first');
             const title = document.getElementById('editTitle').value;
             const coverUrl = document.getElementById('editCoverUrl').value;
             const urlInputs = document.querySelectorAll('#urlsContainer input');
@@ -198,7 +323,7 @@
                 return;
             }
             
-            database.ref('manhwas/' + editingManhwaId).update({
+            database.ref(`users/${user.uid}/manhwas/${editingManhwaId}`).update({
                 title,
                 coverUrl,
                 url: urls
@@ -248,7 +373,7 @@
             manhwaElement.innerHTML = `
             <div class="manhwa-main-info">
                 <div class="manhwa-cover">
-                    <img src="${manhwa.coverUrl || 'https://user-uploads.perchance.org/file/be95205f807ff339678a57fc16f3474b.png'}" alt="Manhwa Cover" class="cover-image">
+                    <img src="${manhwa.coverUrl || 'https://picsum.photos/200/300'}" alt="Manhwa Cover" class="cover-image">
                 </div>
                 <div class="manhwa-info">
                     <div class="manhwa-title">${manhwa.title}</div>
@@ -372,14 +497,18 @@
     };
 
     window.deleteManhwa = (manhwaId) => {
+      const user = firebase.auth().currentUser;
+      if (!user) return alert('Please login first');
         if (confirm('Are you sure you want to delete this manhwa?')) {
-            database.ref('manhwas/' + manhwaId).remove();
+            database.ref(`users/${user.uid}/manhwas/${manhwaId}`).remove();
         }
     };
 
     window.openEditModal = (manhwaId) => {
+      const user = firebase.auth().currentUser;
+      if (!user) return alert('Please login first');
         editingManhwaId = manhwaId;
-        database.ref('manhwas/' + manhwaId).once('value', (snapshot) => {
+        database.ref(`users/${user.uid}/manhwas/${manhwaId}`).once('value', (snapshot) => {
             const manhwa = snapshot.val();
             const urls = Array.isArray(manhwa.url) ? manhwa.url : [manhwa.url];
             document.getElementById('editTitle').value = manhwa.title;
@@ -526,22 +655,7 @@
             document.querySelector('.tools-section').style.display = 'block';
         }
         });
-        // Update chapter function
-        window.updateChapter = (manhwaId) => {
-            const newChapter = parseFloat(document.querySelector(`#manhwaList [onclick="updateChapter('${manhwaId}')"]`).previousElementSibling.value);
-            if (!isNaN(newChapter)) {
-                database.ref('manhwas/' + manhwaId).update({
-                lastChapter: newChapter,
-                lastRead: new Date().toISOString()
-                });
-            }
-        };
-    // Delete function
-    window.deleteManhwa = (manhwaId) => {
-      if (confirm('Are you sure you want to delete this manhwa?')) {
-        database.ref('manhwas/' + manhwaId).remove();
-      }
-    };
+
     // Add to existing script
     function openEditModal(manhwaId) {
         editingManhwaId = manhwaId;

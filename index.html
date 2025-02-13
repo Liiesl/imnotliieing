@@ -14,6 +14,12 @@
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+  <!-- In <head> section of index.html, minesweeper.html, etc. -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script type ="module" src="/scripts/firebase-auth.js"></script>
+  <script type ="module" src="/scripts/auth.js"></script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -32,15 +38,85 @@
   </header>
   <div class="container">
     <section class="home-section">
-      <h1 class="home-title">Imnotliieing i swear</h1>
-      <p class="home-subtitle">Take a look at my website.</p>
-      <p class="home-subtitle">This website mainly contain tools/things that either my device doesn't have, i cannot find on the internet, or just fun things i interested in.</p>
-      <p class="home-subtitle">Developed by me only</p>
+      <div class="Home-texts">
+        <h1 class="home-title">IMNOT</h1>
+        <h1 class="home-title">LIIEING</h1>
+        <h2 class="home-alt-title">I SWEAR</h2>
+        <p class="home-subtitle">Take a look at my website.</p>
+        <p class="home-subtitle">This website mainly contain tools/things that either my device doesn't have, i cannot find on the internet, or just fun things i interested in.</p>
+        <p class="home-subtitle">Developed by me only</p>
+      </div>
+      <img src="https://picsum.photos/600/500" alt="main-image" class="main-image">
+    </section>
+
+    <section class="action-section">
+      <div class="action-container">
+        <div class="scrollable-card-list">
+          <!-- Duplicate your cards here (same as in tools-section) -->
+          <div class="card" onclick="openMinesweeper()">
+            <div class="card-icon"><i class="fas fa-bomb"></i></div>
+            <div class="card-content">
+              <div class="card-title">Minesweeper Game</div>
+              <div class="card-description">Play minesweeper with a more modern look.</div>
+            </div>
+          </div>
+          <!-- Longer Appearance Card -->
+          <div class="card" onclick="openLongerAppearance()">
+            <div class="card-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="card-content">
+              <div class="card-title">Longer Appearance</div>
+              <div class="card-description">When the subtitle are not long enough.</div>
+            </div>
+          </div>
+
+          <!-- QR Code Scanner Card -->
+          <div class="card" onclick="openqrcode()">
+            <div class="card-icon">
+              <i class="fas fa-qrcode"></i>
+            </div>
+            <div class="card-content">
+              <div class="card-title">QR code scanner</div>
+              <div class="card-description">Scan a qrcode with our tool.</div>
+            </div>
+          </div>
+
+          <!-- Add this card to your .card-grid section -->
+          <div class="card" onclick="openManhwaTracker()">
+            <div class="card-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <div class="card-content">
+              <div class="card-title">Manhwa Tracker</div>
+              <div class="card-description">Track your manhwa reading progress and chapters.</div>
+            </div>
+          </div>
+
+          <!-- Coming Soon Card -->
+          <div class="card" onclick="showComingSoon()">
+            <div class="card-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div class="card-content">
+              <div class="card-title">Coming Soon</div>
+              <div class="card-description">Stay tuned for our next update!</div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="action-text">
+          <h1 class="action-title">WHAT</h1>
+          <h1 class="action-title">DO YOU</h1>
+          <h1 class="action-title">WANT</h1>
+          <h1 class="action-title">TO DO?</h1>
+        </div>
+      </div>
     </section>
 
     <section class="tools-section">
       <div class="tools-container">
-        <h1>Choose Your Tool</h1>
+        <h1>All Tools</h1>
         <div class="card-grid">
           <!-- Minesweeper Card -->
           <div class="card" onclick="openMinesweeper()">
@@ -100,7 +176,57 @@
         <div class="no-results">No tools found matching your search</div>
       </div>
     </section>
+
+<!-- Add after tools-section -->
+<section class="thanks-section">
+  <div class="thanks-container">
+    <h2>Special Thanks To</h2>
     
+    <!-- Top Row -->
+    <div class="thanks-row">
+      <div class="thanks-item">
+        <img src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/deepseek-color.png" alt="DeepSeek" class="thanks-logo">
+        <div class="thanks-text">
+          <h3>DeepSeek R1</h3>
+          <p>For writing 70% of HTML and all of JavaScript</p>
+        </div>
+      </div>
+      <div class="thanks-item">
+        <img src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/qwen-color.png" alt="Qwen" class="thanks-logo">
+        <div class="thanks-text">
+          <h3>Qwen 2.5</h3>
+          <p>For being a backup when deepseek is down</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="thanks-row">
+      <div class="thanks-item">
+        <img src="https://images.seeklogo.com/logo-png/47/3/netlify-icon-logo-png_seeklogo-477950.png?v=1957917782438887600" alt="Netlify" class="thanks-logo">
+        <div class="thanks-text">
+          <h3>Netlify</h3>
+          <p>For hosting and continuous deployment</p>
+        </div>
+      </div>
+      <div class="thanks-item">
+        <img src="https://firebase.google.com/static/images/brand-guidelines/logo-logomark.png?hl=id" alt="Firebase" class="thanks-logo">
+        <div class="thanks-text">
+          <h3>Firebase</h3>
+          <p>For database support</p>
+        </div>
+      </div>
+      <div class="thanks-item">
+        <img src="path/to/my-logo.png" alt="Myself" class="thanks-logo">
+        <div class="thanks-text">
+          <h3>Myself</h3>
+          <p>Ofcourse, designing and implementing this all</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
     <footer class="footer">
       <div class="social-links">
         <a href="https://youtube.com/@Vfrix" target="_blank">
@@ -143,8 +269,8 @@
 
     // DOMContentLoaded event listener
     window.addEventListener('DOMContentLoaded', function () {
-      // Existing code for fetching sidebar.html
-      fetch('/sidebar.html')
+     // Existing code for fetching sidebar.html
+     fetch('/sidebar.html')
         .then(response => response.text())
         .then(data => {
           document.getElementById('sidebar-container').innerHTML = data;
@@ -171,6 +297,116 @@
         .catch(error => {
           console.error('Failed to load sidebar:', error);
         });
+
+    // Scrollable cards functionality
+    const cardList = document.querySelector('.scrollable-card-list');
+    const cards = Array.from(document.querySelectorAll('.scrollable-card-list .card'));
+    
+    if (cardList && cards.length > 0) {
+      // Initialize first card as active
+      cards[0].classList.add('active');
+
+      // Function to update active card
+      function updateActiveCard() {
+        const scrollPosition = cardList.scrollTop;
+        const containerHeight = cardList.clientHeight;
+        
+        cards.forEach((card) => {
+          const cardTop = card.offsetTop;
+          const cardHeight = card.offsetHeight;
+          const cardCenter = cardTop + cardHeight / 2;
+          const viewportCenter = scrollPosition + containerHeight / 2;
+          
+          // Calculate distance from center
+          const distanceFromCenter = Math.abs(cardCenter - viewportCenter);
+          
+          if (distanceFromCenter < cardHeight) {
+            card.classList.add('active');
+            card.style.opacity = 1;
+            card.style.filter = 'none';
+            card.style.pointerEvents = 'auto';
+          } else {
+            card.classList.remove('active');
+            // Calculate fade based on distance
+            const fade = Math.max(0.3, 1 - (distanceFromCenter - cardHeight) / cardHeight);
+            card.style.opacity = fade;
+            card.style.filter = `blur(${(1 - fade) * 2}px)`;
+            card.style.pointerEvents = 'none';
+          }
+        });
+
+        // Update scroll indicator
+        const scrollPercentage = scrollPosition / (cardList.scrollHeight - containerHeight);
+        const thumb = document.querySelector('.scroll-thumb');
+        if (thumb) {
+          const track = document.querySelector('.scroll-indicator');
+          const trackHeight = track.clientHeight;
+          const thumbHeight = thumb.clientHeight;
+          const maxTop = trackHeight - thumbHeight;
+          thumb.style.top = `${scrollPercentage * maxTop}px`;
+          
+          // Add active class to thumb when scrolling
+          thumb.classList.add('active');
+          clearTimeout(thumb.timeout);
+          thumb.timeout = setTimeout(() => thumb.classList.remove('active'), 1000);
+        }
+      }
+
+      // Initialize scroll indicator
+      function updateActiveCard() {
+    const scrollPosition = cardList.scrollTop;
+    const containerHeight = cardList.clientHeight;
+    let closestCard = null;
+    let minDistance = Infinity;
+
+    cards.forEach((card) => {
+      const cardTop = card.offsetTop;
+      const cardHeight = card.offsetHeight;
+      const cardCenter = cardTop + cardHeight / 2;
+      const viewportCenter = scrollPosition + containerHeight / 2;
+      const distance = Math.abs(cardCenter - viewportCenter);
+
+      // Remove active class from all cards first
+      card.classList.remove('active');
+      card.style.opacity = '0.5';
+      card.style.filter = 'blur(1px)';
+      card.style.pointerEvents = 'none';
+
+      // Find closest card
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestCard = card;
+      }
+    });
+
+    // Add active class only to closest card
+    if (closestCard) {
+      closestCard.classList.add('active');
+      closestCard.style.opacity = '1';
+      closestCard.style.filter = 'none';
+      closestCard.style.pointerEvents = 'auto';
+      
+      // Smooth snap to center
+      const targetScroll = closestCard.offsetTop - (containerHeight/2) + (closestCard.offsetHeight/2);
+      cardList.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // Add scroll end detection
+  let scrollTimeout;
+  cardList.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      updateActiveCard();
+    }, 50);
+  });
+
+      // Update on resize
+      window.addEventListener('resize', updateActiveCard);
+    }
 
       // Register Service Worker
       if ('serviceWorker' in navigator) {

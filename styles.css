@@ -24,13 +24,31 @@
       }
   
       .home-section {
-        text-align: center;
+        display: flex;
+        flex-direction: row;
+        text-align: left;
         margin-bottom: 4rem;
         padding: 2rem 0;
+        gap: 3rem;
+      }
+
+      .home-title {
+        text-wrap: wrap;
+        margin-bottom: -1.5rem;
+        font-size: 6rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.2;
+        background: linear-gradient(45deg, #ffffff, #b0b0b0);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: left;
       }
   
-      .home-title {
-        font-size: 4.5rem;
+      .home-alt-title {
+        font-size: 4rem;
+        margin-top: 2.5rem;
         margin-bottom: 1.5rem;
         font-weight: 800;
         letter-spacing: -1px;
@@ -39,8 +57,9 @@
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
+        text-align: left;
       }
-  
+
       .home-subtitle {
         font-size: 1.5rem;
         color: #b0b0b0;
@@ -48,9 +67,145 @@
         margin: 0 auto 1rem;
         line-height: 1.6;
       }
-  
+
+      .main-image {
+        border-radius: 15px;
+        width: auto;
+        height: auto;
+      }
+
+      /* New Action Section Styles */
+      .action-section {
+        display: flex;
+        flex-direction: row;
+        width: 100vw;
+        margin-left: 50%;
+        transform: translateX(-50%);
+        padding: 4rem 1rem;
+        background: linear-gradient(135deg, rgba(10,10,10,0.95) 0%, rgba(26,26,26,0.95) 100%);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .action-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: 4rem;
+        align-items: flex-start;
+      }
+
+      .scrollable-card-list {
+        flex: 1;
+        height: 400px;
+        overflow-y: auto;
+        padding: 2rem 0;
+        scrollbar-width: none;
+        position: relative;
+        perspective: 1000px;
+        padding-top: 125px; /* Add padding to the top */
+        padding-bottom: 125px; /* Add padding to the bottom */
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+      }
+
+      .scrollable-card-list::-webkit-scrollbar {
+        width: none; /* Chrome/Safari */
+      }
+
+      .scroll-indicator {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 80%;
+        width: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+
+      .scroll-thumb {
+        position: absolute;
+        right: -4px;
+        width: 12px;
+        height: 12px;
+        background: #4a9eff;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
+      }
+      
+      .scroll-thumb.active {
+        transform: scale(1.2);
+        background: #ffffff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      }
+
+      .scrollable-card-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+      }
+
+      .scrollable-card-list .card {
+        width: 80%;
+        height: 125px;
+        margin-bottom: 1.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0.5;
+        transform: scale(0.95);
+        background: rgba(43, 43, 43, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        scroll-snap-align: center;
+        margin-left: 6rem;
+      }
+
+      .scrollable-card-list .card.active {
+        opacity: 1;
+        background: rgba(43, 43, 43, 0.95);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .scrollable-card-list .card:not(.active) {
+        filter: blur(1px);
+        pointer-events: none;
+      }
+
+      .action-text {
+        flex: 0 0 40%;
+        text-align: right;
+        position: sticky;
+        top: 2rem;
+        padding-right: 2rem;
+        padding-top: 2rem;
+      }
+
+      .action-title {
+        font-size: 4.5rem;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0;
+        background: linear-gradient(45deg, #ffffff, #b0b0b0);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        transition: all 0.3s ease;
+        text-align: right;
+        padding-right: 4rem;
+      }
+
+      .action-title + .action-title {
+        margin-top: 0.5rem;
+      }
+
       .tools-section {
-        background: rgba(0, 0, 0, 0.5);
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         width: 100vw;
         margin-left: 50%;
         transform: translateX(-50%);
@@ -178,6 +333,66 @@
       .hidden-section {
         display: none !important;
       }
+      
+      /* Updated Thanks Section Styles */
+.thanks-section {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.thanks-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.thanks-container h2 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #fff;
+  text-align: center;
+}
+
+.thanks-row {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.thanks-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 400px;
+  padding: 1rem;
+}
+
+.thanks-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.thanks-text h3 {
+  font-size: 1.25rem;
+  color: #fff;
+  margin-bottom: 0.25rem;
+  text-align: left;
+}
+
+.thanks-text p {
+  color: #b0b0b0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: left;
+  margin: 0;
+}
   
       @media (max-width: 768px) {
         .container {
@@ -242,6 +457,59 @@
   
         .social-links a {
           font-size: 0.7rem;
+        }
+
+        .action-container {
+          flex-direction: column;
+          gap: 2rem;
+        }
+        
+        .scrollable-card-list {
+          width: 100%;
+          order: 2;
+          height: 400px; /* Adjust for mobile */
+          padding: 1rem 0.5rem;
+        }
+        
+        .action-text {
+          text-align: center;
+          order: 1;
+          padding-right: 0;
+          position: relative;
+          top: 0;
+        }
+        
+        .action-title {
+          font-size: 3rem;
+          letter-spacing: -1px;
+        }
+      
+        .scroll-indicator {
+          right: 4px;
+        }
+        .thanks-row {
+          gap: 1.5rem;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .thanks-item {
+          width: 100%;
+          max-width: 300px;
+          justify-content: flex-start;
+        }
+        
+        .thanks-logo {
+          width: 40px;
+          height: 40px;
+        }
+        
+        .thanks-text h3 {
+          font-size: 1.1rem;
+        }
+        
+        .thanks-text p {
+          font-size: 0.85rem;
         }
       }
   
@@ -364,6 +632,26 @@
         .social-links {
           gap: 0.8rem;
         }
+
+  .action-title {
+    font-size: 2.5rem;
+  }
+
+  .scrollable-card-list {
+    height: 350px;
+  }
+
+  .scrollable-card-list .card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .scroll-thumb {
+    width: 8px;
+    height: 8px;
+    right: -2px;
+  }
+
       }
   
       /* Simple fade in animation */
