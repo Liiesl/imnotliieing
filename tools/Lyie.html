@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML to JPG Converter for Lyie MTL</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .control-panel {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    button {
+      background-color: #43b581;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
+    }
+    
+    button:hover {
+      background-color: #3ca374;
+    }
+    
+    .preview-container {
+      width: 100%;
+      max-width: 1000px;
+      overflow: hidden;
+    }
+    
+    /* Header Styles (copied from original) */
+    .header-container {
+      width: 1000px;
+      height: 660px;
+      margin: 0 auto;
+      background-color: #36393f;
+      color: white;
+      font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      position: relative;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 90px;
+      background-color: #202225;
+      height: auto;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .icon {
+      width: 64px;
+      height: 64px;
+      background-color: #7289da;
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: white;
+    }
+
+    .nav-dot {
+      width: 14px;
+      height: 14px;
+      background-color: #72767d;
+      border-radius: 50%;
+      margin: 14px 0;
+    }
+
+    .header-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #40444b;
+      margin-bottom: 20px;
+    }
+
+    .hash-icon {
+      font-size: 40px;
+      color: #72767d;
+      margin-right: 12px;
+    }
+
+    .channel-name {
+      font-size: 30px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    /* New approach for site logo with SVG text instead of CSS gradient */
+    .site-logo-container {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .site-logo-svg {
+      width: 500px;
+      height: 150px;
+    }
+
+    .tagline {
+      color: #b9bbbe;
+      font-size: 2rem;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .info-card {
+      background-color: #2f3136;
+      border-radius: 8px;
+      padding: 24px;
+      width: 95%;
+      margin-top: 20px;
+    }
+
+    .card-title {
+      font-size: 26px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #72767d;
+      margin-bottom: 14px;
+    }
+
+    .card-content {
+      display: flex;
+      align-items: center;
+      font-size: 26px;
+    }
+
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      background-color: #5865F2;
+      border-radius: 50%;
+      margin-right: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+    }
+
+    .tool-link {
+      color: #7289da;
+      text-decoration: none;
+      font-size: 40px;
+    }
+    
+    .tool-link:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      padding-top: 20px;
+      border-top: 1px solid #40444b;
+      font-size: 22px;
+      color: #72767d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+    }
+
+    .status-dot {
+      width: 16px;
+      height: 16px;
+      background-color: #43b581;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    
+    .github-link {
+      color: #7289da;
+      text-decoration: none;
+    }
+
+    .github-link:hover {
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 1020px) {
+      .header-container {
+        width: 100%;
+        height: auto;
+      }
+      
+      .site-logo-svg {
+        width: 280px;
+        height: 80px;
+      }
+      
+      .footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center; margin-bottom: 20px;">Lyie MTL Header Generator</h1>
+  
+  <div class="control-panel">
+    <div class="form-group">
+      <label for="channel-name-input">Manhwa Name:</label>
+      <input type="text" id="channel-name-input" value="Insert Manhwa" placeholder="Enter manhwa name">
+    </div>
+    
+    <button id="download-jpg">Download JPG</button>
+  </div>
+  
+  <div class="preview-container">
+    <div id="header-preview" class="header-container">
+      <div class="sidebar">
+        <div class="icon">L</div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+      </div>
+      <div class="header-content">
+        <div class="top-bar">
+          <span class="hash-icon">#</span>
+          <span class="channel-name" id="channel-name-display">Insert Manhwa</span>
+        </div>
+        
+        <div class="main-content">
+          <div class="site-logo-container">
+            <svg class="site-logo-svg" viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#5865F2" />
+                  <stop offset="100%" style="stop-color:#EB459E" />
+                </linearGradient>
+              </defs>
+              <text x="50%" y="70%" dominant-baseline="middle" text-anchor="middle" 
+                    font-family="Whitney, Helvetica Neue, Helvetica, Arial, sans-serif" 
+                    font-size="60" font-weight="800" letter-spacing="1" 
+                    fill="url(#logo-gradient)">
+                Lyie MTL
+              </text>
+            </svg>
+          </div>
+          <p class="tagline">"I will translate all manhwa in the world!"</p>
+          
+          <div class="info-card">
+            <div class="card-title">Using</div>
+            <div class="card-content">
+              <div class="card-icon">M</div>
+              <a href="https://github.com/Liiesl/ManhwaOCR" class="tool-link">github.com/Liiesl/ManhwaOCR</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Translations Online</span>
+          </div>
+          <div>
+            <a href="https://github.com/Liiesl/ManhwaOCR" class="github-link">github.com/Liiesl/ManhwaOCR</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const channelNameInput = document.getElementById('channel-name-input');
+      const channelNameDisplay = document.getElementById('channel-name-display');
+      const downloadJpgBtn = document.getElementById('download-jpg');
+      const headerPreview = document.getElementById('header-preview');
+      
+      // Update preview as you type
+      channelNameInput.addEventListener('input', function() {
+        channelNameDisplay.textContent = this.value;
+      });
+      
+      // Generate and download image
+      downloadJpgBtn.addEventListener('click', function() {
+        // Button loading state
+        const originalBtnText = downloadJpgBtn.textContent;
+        downloadJpgBtn.innerHTML = '<div class="spinner"></div>Generating...';
+        downloadJpgBtn.disabled = true;
+        
+        // Configure html2canvas with options for better SVG rendering
+        const options = {
+          allowTaint: true,
+          useCORS: true,
+          backgroundColor: null,
+          scale: 2, // Higher quality
+          logging: false
+        };
+        
+        // Use html2canvas to convert the header to an image
+        html2canvas(headerPreview, options).then(function(canvas) {
+          // Convert canvas to a data URL
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          
+          // Create a filename based on the manhwa name
+          const manhwaName = channelNameInput.value.trim() || 'Insert-Manhwa';
+          const filename = `lyie-mtl-${manhwaName.replace(/\s+/g, '-')}.jpg`;
+          
+          // Create a temporary link and trigger download with file picker
+          const link = document.createElement('a');
+          link.href = imgData;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Reset button state
+          downloadJpgBtn.innerHTML = originalBtnText;
+          downloadJpgBtn.disabled = false;
+        }).catch(function(error) {
+          console.error('Error generating image:', error);
+          alert('There was an error generating the image. Please try again.');
+          
+          // Reset button state
+          downloadJpgBtn.innerHTML = originalBtnText;
+          downloadJpgBtn.disabled = false;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
